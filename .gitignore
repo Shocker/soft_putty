@@ -1,0 +1,5 @@
+*.suo
+*.sln
+*.vc*
+*.lnk
+build/Release
