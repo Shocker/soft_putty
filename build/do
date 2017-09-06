@@ -1,0 +1,5 @@
+rm Release/*.exe
+cd ../src/windows
+make -f ../../build/Makefile.mingw
+mv *.exe ../../build/release
+cd ../../build/Release
