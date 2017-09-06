@@ -18,10 +18,10 @@ void (*putty_signal(int sig, void (*func)(int)))(int) {
     
     sa.sa_handler = func;
     if(sigemptyset(&sa.sa_mask) < 0)
-	return SIG_ERR;
+    return SIG_ERR;
     sa.sa_flags = SA_RESTART;
     if(sigaction(sig, &sa, &old) < 0)
-	return SIG_ERR;
+    return SIG_ERR;
     return old.sa_handler;
 }
 
@@ -32,8 +32,8 @@ void block_signal(int sig, int block_it)
     sigemptyset(&ss);
     sigaddset(&ss, sig);
     if(sigprocmask(block_it ? SIG_BLOCK : SIG_UNBLOCK, &ss, 0) < 0) {
-	perror("sigprocmask");
-	exit(1);
+    perror("sigprocmask");
+    exit(1);
     }
 }
 

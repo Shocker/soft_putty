@@ -91,7 +91,7 @@
 #define POLY (0xEDB88320L)
 
 #ifdef GENPROGRAM
-#define INITFUNC		       /* the gen program needs the init func :-) */
+#define INITFUNC               /* the gen program needs the init func :-) */
 #endif
 
 #ifdef INITFUNC
@@ -108,16 +108,16 @@ void crc32_init(void)
     int i;
 
     for (i = 0; i < 256; i++) {
-	unsigned long newbyte, x32term;
-	int j;
-	crcword = 0;
-	newbyte = i;
-	for (j = 0; j < 8; j++) {
-	    x32term = (crcword ^ newbyte) & 1;
-	    crcword = (crcword >> 1) ^ (x32term * POLY);
-	    newbyte >>= 1;
-	}
-	crc32_table[i] = crcword;
+    unsigned long newbyte, x32term;
+    int j;
+    crcword = 0;
+    newbyte = i;
+    for (j = 0; j < 8; j++) {
+        x32term = (crcword ^ newbyte) & 1;
+        crcword = (crcword >> 1) ^ (x32term * POLY);
+        newbyte >>= 1;
+    }
+    crc32_table[i] = crcword;
     }
 }
 
@@ -202,10 +202,10 @@ int main(void)
 
     crc32_init();
     for (i = 0; i < 256; i++) {
-	printf("%s0x%08lXL%s",
-	       (i % 4 == 0 ? "    " : " "),
-	       crc32_table[i],
-	       (i % 4 == 3 ? (i == 255 ? "\n" : ",\n") : ","));
+    printf("%s0x%08lXL%s",
+           (i % 4 == 0 ? "    " : " "),
+           crc32_table[i],
+           (i % 4 == 3 ? (i == 255 ? "\n" : ",\n") : ","));
     }
 
     return 0;
@@ -216,9 +216,9 @@ unsigned long crc32_update(unsigned long crcword, const void *buf, size_t len)
 {
     const unsigned char *p = (const unsigned char *) buf;
     while (len--) {
-	unsigned long newbyte = *p++;
-	newbyte ^= crcword & 0xFFL;
-	crcword = (crcword >> 8) ^ crc32_table[newbyte];
+    unsigned long newbyte = *p++;
+    newbyte ^= crcword & 0xFFL;
+    crcword = (crcword >> 8) ^ crc32_table[newbyte];
     }
     return crcword;
 }

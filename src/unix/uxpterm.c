@@ -8,7 +8,7 @@
 #include "putty.h"
 
 const char *const appname = "pterm";
-const int use_event_log = 0;	       /* pterm doesn't need it */
+const int use_event_log = 0;           /* pterm doesn't need it */
 const int new_session = 0, saved_sessions = 0;   /* or these */
 const int use_pty_argv = TRUE;
 

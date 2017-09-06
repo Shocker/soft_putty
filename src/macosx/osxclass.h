@@ -93,15 +93,15 @@ struct alert_queue {
  * header file and not osx.h, because some of them have Cocoa class
  * types in their prototypes.)
  */
-#define HSPACING 12		       /* needed in osxdlg.m and osxctrls.m */
+#define HSPACING 12               /* needed in osxdlg.m and osxctrls.m */
 #define VSPACING 8
 
 void *fe_dlg_init(void *data, NSWindow *window, NSObject *target, SEL action);
 void fe_dlg_free(void *dv);
 void create_ctrls(void *dv, NSView *parent, struct controlset *s,
-		  int *minw, int *minh);
+          int *minw, int *minh);
 int place_ctrls(void *dv, struct controlset *s, int leftx, int topy,
-		int width);	       /* returns height used */
+        int width);           /* returns height used */
 void select_panel(void *dv, struct controlbox *b, const char *name);
 
 #endif /* PUTTY_OSXCLASS_H */

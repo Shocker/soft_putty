@@ -999,13 +999,13 @@ int keysym_to_unicode(int keysym)
     j = lenof(keysyms);
 
     while (j - i >= 2) {
-	k = (j + i) / 2;
-	if (keysyms[k].keysym == keysym)
-	    return keysyms[k].unicode;
-	else if (keysyms[k].keysym < keysym)
-	    i = k;
-	else
-	    j = k;
+    k = (j + i) / 2;
+    if (keysyms[k].keysym == keysym)
+        return keysyms[k].unicode;
+    else if (keysyms[k].keysym < keysym)
+        i = k;
+    else
+        j = k;
     }
     return -1;
 }

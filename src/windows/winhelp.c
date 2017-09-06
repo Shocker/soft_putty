@@ -36,32 +36,32 @@ void init_help(void)
     if (q && q >= r) r = q+1;
     strcpy(r, PUTTY_HELP_FILE);
     if ( (fp = fopen(b, "r")) != NULL) {
-	help_path = dupstr(b);
-	fclose(fp);
+    help_path = dupstr(b);
+    fclose(fp);
     } else
-	help_path = NULL;
+    help_path = NULL;
     strcpy(r, PUTTY_HELP_CONTENTS);
     if ( (fp = fopen(b, "r")) != NULL) {
-	help_has_contents = TRUE;
-	fclose(fp);
+    help_has_contents = TRUE;
+    fclose(fp);
     } else
-	help_has_contents = FALSE;
+    help_has_contents = FALSE;
 
 #ifndef NO_HTMLHELP
     strcpy(r, PUTTY_CHM_FILE);
     if ( (fp = fopen(b, "r")) != NULL) {
-	chm_path = dupstr(b);
-	fclose(fp);
+    chm_path = dupstr(b);
+    fclose(fp);
     } else
-	chm_path = NULL;
+    chm_path = NULL;
     if (chm_path) {
-	HINSTANCE dllHH = load_system32_dll("hhctrl.ocx");
-	GET_WINDOWS_FUNCTION(dllHH, HtmlHelpA);
-	if (!p_HtmlHelpA) {
-	    chm_path = NULL;
-	    if (dllHH)
-		FreeLibrary(dllHH);
-	}
+    HINSTANCE dllHH = load_system32_dll("hhctrl.ocx");
+    GET_WINDOWS_FUNCTION(dllHH, HtmlHelpA);
+    if (!p_HtmlHelpA) {
+        chm_path = NULL;
+        if (dllHH)
+        FreeLibrary(dllHH);
+    }
     }
 #endif /* NO_HTMLHELP */
 }
@@ -83,41 +83,41 @@ int has_help(void)
      */
     return (help_path != NULL
 #ifndef NO_HTMLHELP
-	    || chm_path
+        || chm_path
 #endif /* NO_HTMLHELP */
-	   );
+       );
 }
 
 void launch_help(HWND hwnd, const char *topic)
 {
     if (topic) {
-	int colonpos = strcspn(topic, ":");
+    int colonpos = strcspn(topic, ":");
 
 #ifndef NO_HTMLHELP
-	if (chm_path) {
-	    char *fname;
-	    assert(topic[colonpos] != '\0');
-	    fname = dupprintf("%s::/%s.html>main", chm_path,
-			      topic + colonpos + 1);
-	    p_HtmlHelpA(hwnd, fname, HH_DISPLAY_TOPIC, 0);
-	    sfree(fname);
-	} else
+    if (chm_path) {
+        char *fname;
+        assert(topic[colonpos] != '\0');
+        fname = dupprintf("%s::/%s.html>main", chm_path,
+                  topic + colonpos + 1);
+        p_HtmlHelpA(hwnd, fname, HH_DISPLAY_TOPIC, 0);
+        sfree(fname);
+    } else
 #endif /* NO_HTMLHELP */
-	if (help_path) {
-	    char *cmd = dupprintf("JI(`',`%.*s')", colonpos, topic);
-	    WinHelp(hwnd, help_path, HELP_COMMAND, (DWORD)cmd);
-	    sfree(cmd);
-	}
+    if (help_path) {
+        char *cmd = dupprintf("JI(`',`%.*s')", colonpos, topic);
+        WinHelp(hwnd, help_path, HELP_COMMAND, (DWORD)cmd);
+        sfree(cmd);
+    }
     } else {
 #ifndef NO_HTMLHELP
-	if (chm_path) {
-	    p_HtmlHelpA(hwnd, chm_path, HH_DISPLAY_TOPIC, 0);
-	} else
+    if (chm_path) {
+        p_HtmlHelpA(hwnd, chm_path, HH_DISPLAY_TOPIC, 0);
+    } else
 #endif /* NO_HTMLHELP */
-	if (help_path) {
-	    WinHelp(hwnd, help_path,
-		    help_has_contents ? HELP_FINDER : HELP_CONTENTS, 0);
-	}
+    if (help_path) {
+        WinHelp(hwnd, help_path,
+            help_has_contents ? HELP_FINDER : HELP_CONTENTS, 0);
+    }
     }
     requested_help = TRUE;
 }
@@ -126,13 +126,13 @@ void quit_help(HWND hwnd)
 {
     if (requested_help) {
 #ifndef NO_HTMLHELP
-	if (chm_path) {
-	    p_HtmlHelpA(NULL, NULL, HH_CLOSE_ALL, 0);
-	} else
+    if (chm_path) {
+        p_HtmlHelpA(NULL, NULL, HH_CLOSE_ALL, 0);
+    } else
 #endif /* NO_HTMLHELP */
-	if (help_path) {
-	    WinHelp(hwnd, help_path, HELP_QUIT, 0);
-	}
-	requested_help = FALSE;
+    if (help_path) {
+        WinHelp(hwnd, help_path, HELP_QUIT, 0);
+    }
+    requested_help = FALSE;
     }
 }

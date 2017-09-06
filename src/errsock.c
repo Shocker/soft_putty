@@ -25,7 +25,7 @@ static Plug sk_error_plug(Socket s, Plug p)
     Error_Socket ps = (Error_Socket) s;
     Plug ret = ps->plug;
     if (p)
-	ps->plug = p;
+    ps->plug = p;
     return ret;
 }
 
@@ -51,15 +51,15 @@ static char *sk_error_peer_info(Socket s)
 Socket new_error_socket(const char *errmsg, Plug plug)
 {
     static const struct socket_function_table socket_fn_table = {
-	sk_error_plug,
-	sk_error_close,
-	NULL /* write */,
-	NULL /* write_oob */,
-	NULL /* write_eof */,
-	NULL /* flush */,
-	NULL /* set_frozen */,
-	sk_error_socket_error,
-	sk_error_peer_info,
+    sk_error_plug,
+    sk_error_close,
+    NULL /* write */,
+    NULL /* write_oob */,
+    NULL /* write_eof */,
+    NULL /* flush */,
+    NULL /* set_frozen */,
+    sk_error_socket_error,
+    sk_error_peer_info,
     };
 
     Error_Socket ret;

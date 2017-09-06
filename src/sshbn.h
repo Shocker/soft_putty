@@ -46,8 +46,8 @@ typedef unsigned long long BignumDblInt;
 #define MUL_WORD(w1, w2) ((BignumDblInt)w1 * w2)
 #define DIVMOD_WORD(q, r, hi, lo, w) \
     __asm__("div %2" : \
-	    "=d" (r), "=a" (q) : \
-	    "r" (w), "d" (hi), "a" (lo))
+        "=d" (r), "=a" (q) : \
+        "r" (w), "d" (hi), "a" (lo))
 #elif defined _MSC_VER && defined _M_IX86
 typedef unsigned __int32 BignumInt;
 typedef unsigned __int64 BignumDblInt;

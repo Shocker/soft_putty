@@ -55,14 +55,14 @@ struct handle_generic {
      * subthread. `defunct' and `busy' are used only by the main
      * thread.
      */
-    HANDLE h;			       /* the handle itself */
-    HANDLE ev_to_main;		       /* event used to signal main thread */
-    HANDLE ev_from_main;	       /* event used to signal back to us */
-    int moribund;		       /* are we going to kill this soon? */
-    int done;			       /* request subthread to terminate */
-    int defunct;		       /* has the subthread already gone? */
-    int busy;			       /* operation currently in progress? */
-    void *privdata;		       /* for client to remember who they are */
+    HANDLE h;                   /* the handle itself */
+    HANDLE ev_to_main;               /* event used to signal main thread */
+    HANDLE ev_from_main;           /* event used to signal back to us */
+    int moribund;               /* are we going to kill this soon? */
+    int done;                   /* request subthread to terminate */
+    int defunct;               /* has the subthread already gone? */
+    int busy;                   /* operation currently in progress? */
+    void *privdata;               /* for client to remember who they are */
 };
 
 typedef enum { HT_INPUT, HT_OUTPUT, HT_FOREIGN } HandleType;
@@ -78,14 +78,14 @@ struct handle_input {
     /*
      * Copy of the handle_generic structure.
      */
-    HANDLE h;			       /* the handle itself */
-    HANDLE ev_to_main;		       /* event used to signal main thread */
-    HANDLE ev_from_main;	       /* event used to signal back to us */
-    int moribund;		       /* are we going to kill this soon? */
-    int done;			       /* request subthread to terminate */
-    int defunct;		       /* has the subthread already gone? */
-    int busy;			       /* operation currently in progress? */
-    void *privdata;		       /* for client to remember who they are */
+    HANDLE h;                   /* the handle itself */
+    HANDLE ev_to_main;               /* event used to signal main thread */
+    HANDLE ev_from_main;           /* event used to signal back to us */
+    int moribund;               /* are we going to kill this soon? */
+    int done;                   /* request subthread to terminate */
+    int defunct;               /* has the subthread already gone? */
+    int busy;                   /* operation currently in progress? */
+    void *privdata;               /* for client to remember who they are */
 
     /*
      * Data set at initialisation and then read-only.
@@ -96,9 +96,9 @@ struct handle_input {
      * Data set by the input thread before signalling ev_to_main,
      * and read by the main thread after receiving that signal.
      */
-    char buffer[4096];		       /* the data read from the handle */
-    DWORD len;			       /* how much data that was */
-    int readerr;		       /* lets us know about read errors */
+    char buffer[4096];               /* the data read from the handle */
+    DWORD len;                   /* how much data that was */
+    int readerr;               /* lets us know about read errors */
 
     /*
      * Callback function called by this module when data arrives on
@@ -118,52 +118,52 @@ static DWORD WINAPI handle_input_threadfunc(void *param)
     int readret, readlen, finished;
 
     if (ctx->flags & HANDLE_FLAG_OVERLAPPED) {
-	povl = &ovl;
-	oev = CreateEvent(NULL, TRUE, FALSE, NULL);
+    povl = &ovl;
+    oev = CreateEvent(NULL, TRUE, FALSE, NULL);
     } else {
-	povl = NULL;
+    povl = NULL;
     }
 
     if (ctx->flags & HANDLE_FLAG_UNITBUFFER)
-	readlen = 1;
+    readlen = 1;
     else
-	readlen = sizeof(ctx->buffer);
+    readlen = sizeof(ctx->buffer);
 
     while (1) {
-	if (povl) {
-	    memset(povl, 0, sizeof(OVERLAPPED));
-	    povl->hEvent = oev;
-	}
-	readret = ReadFile(ctx->h, ctx->buffer,readlen, &ctx->len, povl);
-	if (!readret)
-	    ctx->readerr = GetLastError();
-	else
-	    ctx->readerr = 0;
-	if (povl && !readret && ctx->readerr == ERROR_IO_PENDING) {
-	    WaitForSingleObject(povl->hEvent, INFINITE);
-	    readret = GetOverlappedResult(ctx->h, povl, &ctx->len, FALSE);
-	    if (!readret)
-		ctx->readerr = GetLastError();
-	    else
-		ctx->readerr = 0;
-	}
+    if (povl) {
+        memset(povl, 0, sizeof(OVERLAPPED));
+        povl->hEvent = oev;
+    }
+    readret = ReadFile(ctx->h, ctx->buffer,readlen, &ctx->len, povl);
+    if (!readret)
+        ctx->readerr = GetLastError();
+    else
+        ctx->readerr = 0;
+    if (povl && !readret && ctx->readerr == ERROR_IO_PENDING) {
+        WaitForSingleObject(povl->hEvent, INFINITE);
+        readret = GetOverlappedResult(ctx->h, povl, &ctx->len, FALSE);
+        if (!readret)
+        ctx->readerr = GetLastError();
+        else
+        ctx->readerr = 0;
+    }
 
-	if (!readret) {
-	    /*
-	     * Windows apparently sends ERROR_BROKEN_PIPE when a
-	     * pipe we're reading from is closed normally from the
-	     * writing end. This is ludicrous; if that situation
-	     * isn't a natural EOF, _nothing_ is. So if we get that
-	     * particular error, we pretend it's EOF.
-	     */
-	    if (ctx->readerr == ERROR_BROKEN_PIPE)
-		ctx->readerr = 0;
-	    ctx->len = 0;
-	}
+    if (!readret) {
+        /*
+         * Windows apparently sends ERROR_BROKEN_PIPE when a
+         * pipe we're reading from is closed normally from the
+         * writing end. This is ludicrous; if that situation
+         * isn't a natural EOF, _nothing_ is. So if we get that
+         * particular error, we pretend it's EOF.
+         */
+        if (ctx->readerr == ERROR_BROKEN_PIPE)
+        ctx->readerr = 0;
+        ctx->len = 0;
+    }
 
-	if (readret && ctx->len == 0 &&
-	    (ctx->flags & HANDLE_FLAG_IGNOREEOF))
-	    continue;
+    if (readret && ctx->len == 0 &&
+        (ctx->flags & HANDLE_FLAG_IGNOREEOF))
+        continue;
 
         /*
          * If we just set ctx->len to 0, that means the read operation
@@ -175,13 +175,13 @@ static DWORD WINAPI handle_input_threadfunc(void *param)
          */
         finished = (ctx->len == 0);
 
-	SetEvent(ctx->ev_to_main);
+    SetEvent(ctx->ev_to_main);
 
-	if (finished)
-	    break;
+    if (finished)
+        break;
 
-	WaitForSingleObject(ctx->ev_from_main, INFINITE);
-	if (ctx->done) {
+    WaitForSingleObject(ctx->ev_from_main, INFINITE);
+    if (ctx->done) {
             /*
              * The main thread has asked us to shut down. Send back an
              * event indicating that we've done so. Hereafter we must
@@ -194,7 +194,7 @@ static DWORD WINAPI handle_input_threadfunc(void *param)
     }
 
     if (povl)
-	CloseHandle(oev);
+    CloseHandle(oev);
 
     return 0;
 }
@@ -207,7 +207,7 @@ static DWORD WINAPI handle_input_threadfunc(void *param)
 static void handle_throttle(struct handle_input *ctx, int backlog)
 {
     if (ctx->defunct)
-	return;
+    return;
 
     /*
      * If there's a read operation already in progress, do nothing:
@@ -215,15 +215,15 @@ static void handle_throttle(struct handle_input *ctx, int backlog)
      * position to make a better decision.
      */
     if (ctx->busy)
-	return;
+    return;
 
     /*
      * Otherwise, we must decide whether to start a new read based
      * on the size of the backlog.
      */
     if (backlog < MAX_BACKLOG) {
-	SetEvent(ctx->ev_from_main);
-	ctx->busy = TRUE;
+    SetEvent(ctx->ev_from_main);
+    ctx->busy = TRUE;
     }
 }
 
@@ -238,14 +238,14 @@ struct handle_output {
     /*
      * Copy of the handle_generic structure.
      */
-    HANDLE h;			       /* the handle itself */
-    HANDLE ev_to_main;		       /* event used to signal main thread */
-    HANDLE ev_from_main;	       /* event used to signal back to us */
-    int moribund;		       /* are we going to kill this soon? */
-    int done;			       /* request subthread to terminate */
-    int defunct;		       /* has the subthread already gone? */
-    int busy;			       /* operation currently in progress? */
-    void *privdata;		       /* for client to remember who they are */
+    HANDLE h;                   /* the handle itself */
+    HANDLE ev_to_main;               /* event used to signal main thread */
+    HANDLE ev_from_main;           /* event used to signal back to us */
+    int moribund;               /* are we going to kill this soon? */
+    int done;                   /* request subthread to terminate */
+    int defunct;               /* has the subthread already gone? */
+    int busy;                   /* operation currently in progress? */
+    void *privdata;               /* for client to remember who they are */
 
     /*
      * Data set at initialisation and then read-only.
@@ -256,20 +256,20 @@ struct handle_output {
      * Data set by the main thread before signalling ev_from_main,
      * and read by the input thread after receiving that signal.
      */
-    char *buffer;		       /* the data to write */
-    DWORD len;			       /* how much data there is */
+    char *buffer;               /* the data to write */
+    DWORD len;                   /* how much data there is */
 
     /*
      * Data set by the input thread before signalling ev_to_main,
      * and read by the main thread after receiving that signal.
      */
-    DWORD lenwritten;		       /* how much data we actually wrote */
-    int writeerr;		       /* return value from WriteFile */
+    DWORD lenwritten;               /* how much data we actually wrote */
+    int writeerr;               /* return value from WriteFile */
 
     /*
      * Data only ever read or written by the main thread.
      */
-    bufchain queued_data;	       /* data still waiting to be written */
+    bufchain queued_data;           /* data still waiting to be written */
     enum { EOF_NO, EOF_PENDING, EOF_SENT } outgoingeof;
 
     /*
@@ -287,46 +287,46 @@ static DWORD WINAPI handle_output_threadfunc(void *param)
     int writeret;
 
     if (ctx->flags & HANDLE_FLAG_OVERLAPPED) {
-	povl = &ovl;
-	oev = CreateEvent(NULL, TRUE, FALSE, NULL);
+    povl = &ovl;
+    oev = CreateEvent(NULL, TRUE, FALSE, NULL);
     } else {
-	povl = NULL;
+    povl = NULL;
     }
 
     while (1) {
-	WaitForSingleObject(ctx->ev_from_main, INFINITE);
-	if (ctx->done) {
+    WaitForSingleObject(ctx->ev_from_main, INFINITE);
+    if (ctx->done) {
             /*
              * The main thread has asked us to shut down. Send back an
              * event indicating that we've done so. Hereafter we must
              * not touch ctx at all, because the main thread might
              * have freed it.
              */
-	    SetEvent(ctx->ev_to_main);
-	    break;
-	}
-	if (povl) {
-	    memset(povl, 0, sizeof(OVERLAPPED));
-	    povl->hEvent = oev;
-	}
+        SetEvent(ctx->ev_to_main);
+        break;
+    }
+    if (povl) {
+        memset(povl, 0, sizeof(OVERLAPPED));
+        povl->hEvent = oev;
+    }
 
-	writeret = WriteFile(ctx->h, ctx->buffer, ctx->len,
-			     &ctx->lenwritten, povl);
-	if (!writeret)
-	    ctx->writeerr = GetLastError();
-	else
-	    ctx->writeerr = 0;
-	if (povl && !writeret && GetLastError() == ERROR_IO_PENDING) {
-	    writeret = GetOverlappedResult(ctx->h, povl,
-					   &ctx->lenwritten, TRUE);
-	    if (!writeret)
-		ctx->writeerr = GetLastError();
-	    else
-		ctx->writeerr = 0;
-	}
+    writeret = WriteFile(ctx->h, ctx->buffer, ctx->len,
+                 &ctx->lenwritten, povl);
+    if (!writeret)
+        ctx->writeerr = GetLastError();
+    else
+        ctx->writeerr = 0;
+    if (povl && !writeret && GetLastError() == ERROR_IO_PENDING) {
+        writeret = GetOverlappedResult(ctx->h, povl,
+                       &ctx->lenwritten, TRUE);
+        if (!writeret)
+        ctx->writeerr = GetLastError();
+        else
+        ctx->writeerr = 0;
+    }
 
-	SetEvent(ctx->ev_to_main);
-	if (!writeret) {
+    SetEvent(ctx->ev_to_main);
+    if (!writeret) {
             /*
              * The write operation has suffered an error. Telling that
              * to the main thread will cause it to set its 'defunct'
@@ -334,12 +334,12 @@ static DWORD WINAPI handle_output_threadfunc(void *param)
              * opportunity, so we must not touch ctx at all after
              * this.
              */
-	    break;
+        break;
         }
     }
 
     if (povl)
-	CloseHandle(oev);
+    CloseHandle(oev);
 
     return 0;
 }
@@ -350,11 +350,11 @@ static void handle_try_output(struct handle_output *ctx)
     int sendlen;
 
     if (!ctx->busy && bufchain_size(&ctx->queued_data)) {
-	bufchain_prefix(&ctx->queued_data, &senddata, &sendlen);
-	ctx->buffer = senddata;
-	ctx->len = sendlen;
-	SetEvent(ctx->ev_from_main);
-	ctx->busy = TRUE;
+    bufchain_prefix(&ctx->queued_data, &senddata, &sendlen);
+    ctx->buffer = senddata;
+    ctx->len = sendlen;
+    SetEvent(ctx->ev_from_main);
+    ctx->busy = TRUE;
     } else if (!ctx->busy && bufchain_size(&ctx->queued_data) == 0 &&
                ctx->outgoingeof == EOF_PENDING) {
         CloseHandle(ctx->h);
@@ -374,14 +374,14 @@ struct handle_foreign {
     /*
      * Copy of the handle_generic structure.
      */
-    HANDLE h;			       /* the handle itself */
-    HANDLE ev_to_main;		       /* event used to signal main thread */
-    HANDLE ev_from_main;	       /* event used to signal back to us */
-    int moribund;		       /* are we going to kill this soon? */
-    int done;			       /* request subthread to terminate */
-    int defunct;		       /* has the subthread already gone? */
-    int busy;			       /* operation currently in progress? */
-    void *privdata;		       /* for client to remember who they are */
+    HANDLE h;                   /* the handle itself */
+    HANDLE ev_to_main;               /* event used to signal main thread */
+    HANDLE ev_from_main;           /* event used to signal back to us */
+    int moribund;               /* are we going to kill this soon? */
+    int done;                   /* request subthread to terminate */
+    int defunct;               /* has the subthread already gone? */
+    int busy;                   /* operation currently in progress? */
+    void *privdata;               /* for client to remember who they are */
 
     /*
      * Our own data, just consisting of knowledge of who to call back.
@@ -397,10 +397,10 @@ struct handle_foreign {
 struct handle {
     HandleType type;
     union {
-	struct handle_generic g;
-	struct handle_input i;
-	struct handle_output o;
-	struct handle_foreign f;
+    struct handle_generic g;
+    struct handle_input i;
+    struct handle_output o;
+    struct handle_foreign f;
     } u;
 };
 
@@ -412,11 +412,11 @@ static int handle_cmp_evtomain(void *av, void *bv)
     struct handle *b = (struct handle *)bv;
 
     if ((unsigned)a->u.g.ev_to_main < (unsigned)b->u.g.ev_to_main)
-	return -1;
+    return -1;
     else if ((unsigned)a->u.g.ev_to_main > (unsigned)b->u.g.ev_to_main)
-	return +1;
+    return +1;
     else
-	return 0;
+    return 0;
 }
 
 static int handle_find_evtomain(void *av, void *bv)
@@ -425,15 +425,15 @@ static int handle_find_evtomain(void *av, void *bv)
     struct handle *b = (struct handle *)bv;
 
     if ((unsigned)*a < (unsigned)b->u.g.ev_to_main)
-	return -1;
+    return -1;
     else if ((unsigned)*a > (unsigned)b->u.g.ev_to_main)
-	return +1;
+    return +1;
     else
-	return 0;
+    return 0;
 }
 
 struct handle *handle_input_new(HANDLE handle, handle_inputfn_t gotdata,
-				void *privdata, int flags)
+                void *privdata, int flags)
 {
     struct handle *h = snew(struct handle);
     DWORD in_threadid; /* required for Win9x */
@@ -450,18 +450,18 @@ struct handle *handle_input_new(HANDLE handle, handle_inputfn_t gotdata,
     h->u.i.flags = flags;
 
     if (!handles_by_evtomain)
-	handles_by_evtomain = newtree234(handle_cmp_evtomain);
+    handles_by_evtomain = newtree234(handle_cmp_evtomain);
     add234(handles_by_evtomain, h);
 
     CreateThread(NULL, 0, handle_input_threadfunc,
-		 &h->u.i, 0, &in_threadid);
+         &h->u.i, 0, &in_threadid);
     h->u.i.busy = TRUE;
 
     return h;
 }
 
 struct handle *handle_output_new(HANDLE handle, handle_outputfn_t sentdata,
-				 void *privdata, int flags)
+                 void *privdata, int flags)
 {
     struct handle *h = snew(struct handle);
     DWORD out_threadid; /* required for Win9x */
@@ -481,11 +481,11 @@ struct handle *handle_output_new(HANDLE handle, handle_outputfn_t sentdata,
     h->u.o.flags = flags;
 
     if (!handles_by_evtomain)
-	handles_by_evtomain = newtree234(handle_cmp_evtomain);
+    handles_by_evtomain = newtree234(handle_cmp_evtomain);
     add234(handles_by_evtomain, h);
 
     CreateThread(NULL, 0, handle_output_threadfunc,
-		 &h->u.o, 0, &out_threadid);
+         &h->u.o, 0, &out_threadid);
 
     return h;
 }
@@ -508,7 +508,7 @@ struct handle *handle_add_foreign_event(HANDLE event,
     h->u.f.busy = TRUE;
 
     if (!handles_by_evtomain)
-	handles_by_evtomain = newtree234(handle_cmp_evtomain);
+    handles_by_evtomain = newtree234(handle_cmp_evtomain);
     add234(handles_by_evtomain, h);
 
     return h;
@@ -552,15 +552,15 @@ HANDLE *handle_get_events(int *nevents)
     ret = NULL;
     n = size = 0;
     if (handles_by_evtomain) {
-	for (i = 0; (h = index234(handles_by_evtomain, i)) != NULL; i++) {
-	    if (h->u.g.busy) {
-		if (n >= size) {
-		    size += 32;
-		    ret = sresize(ret, size, HANDLE);
-		}
-		ret[n++] = h->u.g.ev_to_main;
-	    }
-	}
+    for (i = 0; (h = index234(handles_by_evtomain, i)) != NULL; i++) {
+        if (h->u.g.busy) {
+        if (n >= size) {
+            size += 32;
+            ret = sresize(ret, size, HANDLE);
+        }
+        ret[n++] = h->u.g.ev_to_main;
+        }
+    }
     }
 
     *nevents = n;
@@ -570,7 +570,7 @@ HANDLE *handle_get_events(int *nevents)
 static void handle_destroy(struct handle *h)
 {
     if (h->type == HT_OUTPUT)
-	bufchain_clear(&h->u.o.queued_data);
+    bufchain_clear(&h->u.o.queued_data);
     CloseHandle(h->u.g.ev_from_main);
     CloseHandle(h->u.g.ev_to_main);
     del234(handles_by_evtomain, h);
@@ -591,24 +591,24 @@ void handle_free(struct handle *h)
          * invalid memory after we free its context from under it. So
          * we set the moribund flag, which will be noticed next time
          * an operation completes.
-	 */
-	h->u.g.moribund = TRUE;
+     */
+    h->u.g.moribund = TRUE;
     } else if (h->u.g.defunct) {
-	/*
-	 * There isn't even a subthread; we can go straight to
-	 * handle_destroy.
-	 */
-	handle_destroy(h);
+    /*
+     * There isn't even a subthread; we can go straight to
+     * handle_destroy.
+     */
+    handle_destroy(h);
     } else {
-	/*
-	 * The subthread is alive but not busy, so we now signal it
-	 * to die. Set the moribund flag to indicate that it will
-	 * want destroying after that.
-	 */
-	h->u.g.moribund = TRUE;
-	h->u.g.done = TRUE;
-	h->u.g.busy = TRUE;
-	SetEvent(h->u.g.ev_from_main);
+    /*
+     * The subthread is alive but not busy, so we now signal it
+     * to die. Set the moribund flag to indicate that it will
+     * want destroying after that.
+     */
+    h->u.g.moribund = TRUE;
+    h->u.g.done = TRUE;
+    h->u.g.busy = TRUE;
+    SetEvent(h->u.g.ev_from_main);
     }
 }
 
@@ -619,78 +619,78 @@ void handle_got_event(HANDLE event)
     assert(handles_by_evtomain);
     h = find234(handles_by_evtomain, &event, handle_find_evtomain);
     if (!h) {
-	/*
-	 * This isn't an error condition. If two or more event
-	 * objects were signalled during the same select operation,
-	 * and processing of the first caused the second handle to
-	 * be closed, then it will sometimes happen that we receive
-	 * an event notification here for a handle which is already
-	 * deceased. In that situation we simply do nothing.
-	 */
-	return;
+    /*
+     * This isn't an error condition. If two or more event
+     * objects were signalled during the same select operation,
+     * and processing of the first caused the second handle to
+     * be closed, then it will sometimes happen that we receive
+     * an event notification here for a handle which is already
+     * deceased. In that situation we simply do nothing.
+     */
+    return;
     }
 
     if (h->u.g.moribund) {
-	/*
-	 * A moribund handle is one which we have either already
-	 * signalled to die, or are waiting until its current I/O op
-	 * completes to do so. Either way, it's treated as already
-	 * dead from the external user's point of view, so we ignore
-	 * the actual I/O result. We just signal the thread to die if
-	 * we haven't yet done so, or destroy the handle if not.
-	 */
-	if (h->u.g.done) {
-	    handle_destroy(h);
-	} else {
-	    h->u.g.done = TRUE;
-	    h->u.g.busy = TRUE;
-	    SetEvent(h->u.g.ev_from_main);
-	}
-	return;
+    /*
+     * A moribund handle is one which we have either already
+     * signalled to die, or are waiting until its current I/O op
+     * completes to do so. Either way, it's treated as already
+     * dead from the external user's point of view, so we ignore
+     * the actual I/O result. We just signal the thread to die if
+     * we haven't yet done so, or destroy the handle if not.
+     */
+    if (h->u.g.done) {
+        handle_destroy(h);
+    } else {
+        h->u.g.done = TRUE;
+        h->u.g.busy = TRUE;
+        SetEvent(h->u.g.ev_from_main);
+    }
+    return;
     }
 
     switch (h->type) {
-	int backlog;
+    int backlog;
 
       case HT_INPUT:
-	h->u.i.busy = FALSE;
+    h->u.i.busy = FALSE;
 
-	/*
-	 * A signal on an input handle means data has arrived.
-	 */
-	if (h->u.i.len == 0) {
-	    /*
-	     * EOF, or (nearly equivalently) read error.
-	     */
-	    h->u.i.defunct = TRUE;
-	    h->u.i.gotdata(h, NULL, -h->u.i.readerr);
-	} else {
-	    backlog = h->u.i.gotdata(h, h->u.i.buffer, h->u.i.len);
-	    handle_throttle(&h->u.i, backlog);
-	}
+    /*
+     * A signal on an input handle means data has arrived.
+     */
+    if (h->u.i.len == 0) {
+        /*
+         * EOF, or (nearly equivalently) read error.
+         */
+        h->u.i.defunct = TRUE;
+        h->u.i.gotdata(h, NULL, -h->u.i.readerr);
+    } else {
+        backlog = h->u.i.gotdata(h, h->u.i.buffer, h->u.i.len);
+        handle_throttle(&h->u.i, backlog);
+    }
         break;
 
       case HT_OUTPUT:
-	h->u.o.busy = FALSE;
+    h->u.o.busy = FALSE;
 
-	/*
-	 * A signal on an output handle means we have completed a
-	 * write. Call the callback to indicate that the output
-	 * buffer size has decreased, or to indicate an error.
-	 */
-	if (h->u.o.writeerr) {
-	    /*
-	     * Write error. Send a negative value to the callback,
-	     * and mark the thread as defunct (because the output
-	     * thread is terminating by now).
-	     */
-	    h->u.o.defunct = TRUE;
-	    h->u.o.sentdata(h, -h->u.o.writeerr);
-	} else {
-	    bufchain_consume(&h->u.o.queued_data, h->u.o.lenwritten);
-	    h->u.o.sentdata(h, bufchain_size(&h->u.o.queued_data));
-	    handle_try_output(&h->u.o);
-	}
+    /*
+     * A signal on an output handle means we have completed a
+     * write. Call the callback to indicate that the output
+     * buffer size has decreased, or to indicate an error.
+     */
+    if (h->u.o.writeerr) {
+        /*
+         * Write error. Send a negative value to the callback,
+         * and mark the thread as defunct (because the output
+         * thread is terminating by now).
+         */
+        h->u.o.defunct = TRUE;
+        h->u.o.sentdata(h, -h->u.o.writeerr);
+    } else {
+        bufchain_consume(&h->u.o.queued_data, h->u.o.lenwritten);
+        h->u.o.sentdata(h, bufchain_size(&h->u.o.queued_data));
+        handle_try_output(&h->u.o);
+    }
         break;
 
       case HT_FOREIGN:

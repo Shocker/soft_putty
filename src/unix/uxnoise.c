@@ -23,16 +23,16 @@ static int read_dev_urandom(char *buf, int len)
 
     fd = open("/dev/urandom", O_RDONLY);
     if (fd < 0)
-	return 0;
+    return 0;
 
     ngot = 0;
     while (ngot < len) {
-	ret = read(fd, buf+ngot, len-ngot);
-	if (ret < 0) {
-	    close(fd);
-	    return 0;
-	}
-	ngot += ret;
+    ret = read(fd, buf+ngot, len-ngot);
+    if (ret < 0) {
+        close(fd);
+        return 0;
+    }
+    ngot += ret;
     }
 
     close(fd);
@@ -55,30 +55,30 @@ void noise_get_heavy(void (*func) (void *, int))
     int got_dev_urandom = 0;
 
     if (read_dev_urandom(buf, 32)) {
-	got_dev_urandom = 1;
-	func(buf, 32);
+    got_dev_urandom = 1;
+    func(buf, 32);
     }
 
     fp = popen("ps -axu 2>/dev/null", "r");
     if (fp) {
-	while ( (ret = fread(buf, 1, sizeof(buf), fp)) > 0)
-	    func(buf, ret);
-	pclose(fp);
+    while ( (ret = fread(buf, 1, sizeof(buf), fp)) > 0)
+        func(buf, ret);
+    pclose(fp);
     } else if (!got_dev_urandom) {
-	fprintf(stderr, "popen: %s\n"
-		"Unable to access fallback entropy source\n", strerror(errno));
-	exit(1);
+    fprintf(stderr, "popen: %s\n"
+        "Unable to access fallback entropy source\n", strerror(errno));
+    exit(1);
     }
 
     fp = popen("ls -al /tmp 2>/dev/null", "r");
     if (fp) {
-	while ( (ret = fread(buf, 1, sizeof(buf), fp)) > 0)
-	    func(buf, ret);
-	pclose(fp);
+    while ( (ret = fread(buf, 1, sizeof(buf), fp)) > 0)
+        func(buf, ret);
+    pclose(fp);
     } else if (!got_dev_urandom) {
-	fprintf(stderr, "popen: %s\n"
-		"Unable to access fallback entropy source\n", strerror(errno));
-	exit(1);
+    fprintf(stderr, "popen: %s\n"
+        "Unable to access fallback entropy source\n", strerror(errno));
+    exit(1);
     }
 
     read_random_seed(func);
@@ -91,9 +91,9 @@ void random_save_seed(void)
     void *data;
 
     if (random_active) {
-	random_get_savedata(&data, &len);
-	write_random_seed(data, len);
-	sfree(data);
+    random_get_savedata(&data, &len);
+    write_random_seed(data, len);
+    sfree(data);
     }
 }
 
@@ -120,14 +120,14 @@ void noise_regular(void)
     struct rusage rusage;
 
     if ((fd = open("/proc/meminfo", O_RDONLY)) >= 0) {
-	while ( (ret = read(fd, buf, sizeof(buf))) > 0)
-	    random_add_noise(buf, ret);
-	close(fd);
+    while ( (ret = read(fd, buf, sizeof(buf))) > 0)
+        random_add_noise(buf, ret);
+    close(fd);
     }
     if ((fd = open("/proc/stat", O_RDONLY)) >= 0) {
-	while ( (ret = read(fd, buf, sizeof(buf))) > 0)
-	    random_add_noise(buf, ret);
-	close(fd);
+    while ( (ret = read(fd, buf, sizeof(buf))) > 0)
+        random_add_noise(buf, ret);
+    close(fd);
     }
     getrusage(RUSAGE_SELF, &rusage);
     random_add_noise(&rusage, sizeof(rusage));

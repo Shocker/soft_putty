@@ -6,10 +6,10 @@
 
 #include "ssh.h"
 
-#define RSA_EXPONENT 37		       /* we like this prime */
+#define RSA_EXPONENT 37               /* we like this prime */
 
 int rsa_generate(struct RSAKey *key, int bits, progfn_t pfn,
-		 void *pfnparam)
+         void *pfnparam)
 {
     Bignum pm1, qm1, phi_n;
     unsigned pfirst, qfirst;
@@ -64,17 +64,17 @@ int rsa_generate(struct RSAKey *key, int bits, progfn_t pfn,
      */
     invent_firstbits(&pfirst, &qfirst);
     key->p = primegen(bits / 2, RSA_EXPONENT, 1, NULL,
-		      1, pfn, pfnparam, pfirst);
+              1, pfn, pfnparam, pfirst);
     key->q = primegen(bits - bits / 2, RSA_EXPONENT, 1, NULL,
-		      2, pfn, pfnparam, qfirst);
+              2, pfn, pfnparam, qfirst);
 
     /*
      * Ensure p > q, by swapping them if not.
      */
     if (bignum_cmp(key->p, key->q) < 0) {
-	Bignum t = key->p;
-	key->p = key->q;
-	key->q = t;
+    Bignum t = key->p;
+    key->p = key->q;
+    key->q = t;
     }
 
     /*

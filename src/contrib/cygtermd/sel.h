@@ -59,8 +59,8 @@ sel *sel_new(void *ctx);
  * using sel_wfd_setfd.
  */
 sel_wfd *sel_wfd_add(sel *sel, int fd,
-		     sel_written_fn_t written, sel_writeerr_fn_t writeerr,
-		     void *ctx);
+             sel_written_fn_t written, sel_writeerr_fn_t writeerr,
+             void *ctx);
 
 /*
  * Add a new fd for reading. Returns a sel_rfd which identifies
@@ -73,8 +73,8 @@ sel_wfd *sel_wfd_add(sel *sel, int fd,
  * things happen. "ctx" is passed to both of them.
  */
 sel_rfd *sel_rfd_add(sel *sel, int fd,
-		     sel_readdata_fn_t readdata, sel_readerr_fn_t readerr,
-		     void *ctx);
+             sel_readdata_fn_t readdata, sel_readerr_fn_t readerr,
+             void *ctx);
 
 /*
  * Write data into the output buffer of a wfd. Returns the new

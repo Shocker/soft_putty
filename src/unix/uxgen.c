@@ -16,21 +16,21 @@ char *get_random_data(int len)
 
     fd = open("/dev/random", O_RDONLY);
     if (fd < 0) {
-	sfree(buf);
-	perror("puttygen: unable to open /dev/random");
-	return NULL;
+    sfree(buf);
+    perror("puttygen: unable to open /dev/random");
+    return NULL;
     }
 
     ngot = 0;
     while (ngot < len) {
-	ret = read(fd, buf+ngot, len-ngot);
-	if (ret < 0) {
-	    close(fd);
+    ret = read(fd, buf+ngot, len-ngot);
+    if (ret < 0) {
+        close(fd);
             sfree(buf);
-	    perror("puttygen: unable to read /dev/random");
-	    return NULL;
-	}
-	ngot += ret;
+        perror("puttygen: unable to read /dev/random");
+        return NULL;
+    }
+    ngot += ret;
     }
 
     close(fd);

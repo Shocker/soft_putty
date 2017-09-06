@@ -288,10 +288,10 @@ static word32 bitsel(word32 * input, const int *bitnums, int size)
 {
     word32 ret = 0;
     while (size--) {
-	int bitpos = *bitnums++;
-	ret <<= 1;
-	if (bitpos >= 0)
-	    ret |= 1 & (input[bitpos / 32] >> (bitpos % 32));
+    int bitpos = *bitnums++;
+    ret <<= 1;
+    if (bitpos >= 0)
+        ret |= 1 & (input[bitpos / 32] >> (bitpos % 32));
     }
     return ret;
 }
@@ -300,12 +300,12 @@ static void des_key_setup(word32 key_msw, word32 key_lsw, DESContext * sched)
 {
 
     static const int PC1_Cbits[] = {
-	7, 15, 23, 31, 39, 47, 55, 63, 6, 14, 22, 30, 38, 46,
-	54, 62, 5, 13, 21, 29, 37, 45, 53, 61, 4, 12, 20, 28
+    7, 15, 23, 31, 39, 47, 55, 63, 6, 14, 22, 30, 38, 46,
+    54, 62, 5, 13, 21, 29, 37, 45, 53, 61, 4, 12, 20, 28
     };
     static const int PC1_Dbits[] = {
-	1, 9, 17, 25, 33, 41, 49, 57, 2, 10, 18, 26, 34, 42,
-	50, 58, 3, 11, 19, 27, 35, 43, 51, 59, 36, 44, 52, 60
+    1, 9, 17, 25, 33, 41, 49, 57, 2, 10, 18, 26, 34, 42,
+    50, 58, 3, 11, 19, 27, 35, 43, 51, 59, 36, 44, 52, 60
     };
     /*
      * The bit numbers in the two lists below don't correspond to
@@ -316,15 +316,15 @@ static void des_key_setup(word32 key_msw, word32 key_lsw, DESContext * sched)
      * 0 of C is addressed by writing `32' here.
      */
     static const int PC2_0246[] = {
-	49, 36, 59, 55, -1, -1, 37, 41, 48, 56, 34, 52, -1, -1, 15, 4,
-	25, 19, 9, 1, -1, -1, 12, 7, 17, 0, 22, 3, -1, -1, 46, 43
+    49, 36, 59, 55, -1, -1, 37, 41, 48, 56, 34, 52, -1, -1, 15, 4,
+    25, 19, 9, 1, -1, -1, 12, 7, 17, 0, 22, 3, -1, -1, 46, 43
     };
     static const int PC2_1357[] = {
-	-1, -1, 57, 32, 45, 54, 39, 50, -1, -1, 44, 53, 33, 40, 47, 58,
-	-1, -1, 26, 16, 5, 11, 23, 8, -1, -1, 10, 14, 6, 20, 27, 24
+    -1, -1, 57, 32, 45, 54, 39, 50, -1, -1, 44, 53, 33, 40, 47, 58,
+    -1, -1, 26, 16, 5, 11, 23, 8, -1, -1, 10, 14, 6, 20, 27, 24
     };
     static const int leftshifts[] =
-	{ 1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1 };
+    { 1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1 };
 
     word32 C, D;
     word32 buf[2];
@@ -337,12 +337,12 @@ static void des_key_setup(word32 key_msw, word32 key_lsw, DESContext * sched)
     D = bitsel(buf, PC1_Dbits, 28);
 
     for (i = 0; i < 16; i++) {
-	C = rotl28(C, leftshifts[i]);
-	D = rotl28(D, leftshifts[i]);
-	buf[0] = D;
-	buf[1] = C;
-	sched->k0246[i] = bitsel(buf, PC2_0246, 32);
-	sched->k1357[i] = bitsel(buf, PC2_1357, 32);
+    C = rotl28(C, leftshifts[i]);
+    D = rotl28(D, leftshifts[i]);
+    buf[0] = D;
+    buf[1] = C;
+    sched->k0246[i] = bitsel(buf, PC2_0246, 32);
+    sched->k1357[i] = bitsel(buf, PC2_1357, 32);
     }
 
     sched->iv0 = sched->iv1 = 0;
@@ -521,7 +521,7 @@ static const word32 SPboxes[8][64] = {
     bitswap(R, L,  4, 0x0F0F0F0F))
 
 static void des_encipher(word32 * output, word32 L, word32 R,
-			 DESContext * sched)
+             DESContext * sched)
 {
     word32 swap, s0246, s1357;
 
@@ -561,7 +561,7 @@ static void des_encipher(word32 * output, word32 L, word32 R,
 }
 
 static void des_decipher(word32 * output, word32 L, word32 R,
-			 DESContext * sched)
+             DESContext * sched)
 {
     word32 swap, s0246, s1357;
 
@@ -601,7 +601,7 @@ static void des_decipher(word32 * output, word32 L, word32 R,
 }
 
 static void des_cbc_encrypt(unsigned char *blk,
-			    unsigned int len, DESContext * sched)
+                unsigned int len, DESContext * sched)
 {
     word32 out[2], iv0, iv1;
     unsigned int i;
@@ -611,21 +611,21 @@ static void des_cbc_encrypt(unsigned char *blk,
     iv0 = sched->iv0;
     iv1 = sched->iv1;
     for (i = 0; i < len; i += 8) {
-	iv0 ^= GET_32BIT_MSB_FIRST(blk);
-	iv1 ^= GET_32BIT_MSB_FIRST(blk + 4);
-	des_encipher(out, iv0, iv1, sched);
-	iv0 = out[0];
-	iv1 = out[1];
-	PUT_32BIT_MSB_FIRST(blk, iv0);
-	PUT_32BIT_MSB_FIRST(blk + 4, iv1);
-	blk += 8;
+    iv0 ^= GET_32BIT_MSB_FIRST(blk);
+    iv1 ^= GET_32BIT_MSB_FIRST(blk + 4);
+    des_encipher(out, iv0, iv1, sched);
+    iv0 = out[0];
+    iv1 = out[1];
+    PUT_32BIT_MSB_FIRST(blk, iv0);
+    PUT_32BIT_MSB_FIRST(blk + 4, iv1);
+    blk += 8;
     }
     sched->iv0 = iv0;
     sched->iv1 = iv1;
 }
 
 static void des_cbc_decrypt(unsigned char *blk,
-			    unsigned int len, DESContext * sched)
+                unsigned int len, DESContext * sched)
 {
     word32 out[2], iv0, iv1, xL, xR;
     unsigned int i;
@@ -635,23 +635,23 @@ static void des_cbc_decrypt(unsigned char *blk,
     iv0 = sched->iv0;
     iv1 = sched->iv1;
     for (i = 0; i < len; i += 8) {
-	xL = GET_32BIT_MSB_FIRST(blk);
-	xR = GET_32BIT_MSB_FIRST(blk + 4);
-	des_decipher(out, xL, xR, sched);
-	iv0 ^= out[0];
-	iv1 ^= out[1];
-	PUT_32BIT_MSB_FIRST(blk, iv0);
-	PUT_32BIT_MSB_FIRST(blk + 4, iv1);
-	blk += 8;
-	iv0 = xL;
-	iv1 = xR;
+    xL = GET_32BIT_MSB_FIRST(blk);
+    xR = GET_32BIT_MSB_FIRST(blk + 4);
+    des_decipher(out, xL, xR, sched);
+    iv0 ^= out[0];
+    iv1 ^= out[1];
+    PUT_32BIT_MSB_FIRST(blk, iv0);
+    PUT_32BIT_MSB_FIRST(blk + 4, iv1);
+    blk += 8;
+    iv0 = xL;
+    iv1 = xR;
     }
     sched->iv0 = iv0;
     sched->iv1 = iv1;
 }
 
 static void des_3cbc_encrypt(unsigned char *blk,
-			     unsigned int len, DESContext * scheds)
+                 unsigned int len, DESContext * scheds)
 {
     des_cbc_encrypt(blk, len, &scheds[0]);
     des_cbc_decrypt(blk, len, &scheds[1]);
@@ -659,7 +659,7 @@ static void des_3cbc_encrypt(unsigned char *blk,
 }
 
 static void des_cbc3_encrypt(unsigned char *blk,
-			     unsigned int len, DESContext * scheds)
+                 unsigned int len, DESContext * scheds)
 {
     word32 out[2], iv0, iv1;
     unsigned int i;
@@ -669,23 +669,23 @@ static void des_cbc3_encrypt(unsigned char *blk,
     iv0 = scheds->iv0;
     iv1 = scheds->iv1;
     for (i = 0; i < len; i += 8) {
-	iv0 ^= GET_32BIT_MSB_FIRST(blk);
-	iv1 ^= GET_32BIT_MSB_FIRST(blk + 4);
-	des_encipher(out, iv0, iv1, &scheds[0]);
-	des_decipher(out, out[0], out[1], &scheds[1]);
-	des_encipher(out, out[0], out[1], &scheds[2]);
-	iv0 = out[0];
-	iv1 = out[1];
-	PUT_32BIT_MSB_FIRST(blk, iv0);
-	PUT_32BIT_MSB_FIRST(blk + 4, iv1);
-	blk += 8;
+    iv0 ^= GET_32BIT_MSB_FIRST(blk);
+    iv1 ^= GET_32BIT_MSB_FIRST(blk + 4);
+    des_encipher(out, iv0, iv1, &scheds[0]);
+    des_decipher(out, out[0], out[1], &scheds[1]);
+    des_encipher(out, out[0], out[1], &scheds[2]);
+    iv0 = out[0];
+    iv1 = out[1];
+    PUT_32BIT_MSB_FIRST(blk, iv0);
+    PUT_32BIT_MSB_FIRST(blk + 4, iv1);
+    blk += 8;
     }
     scheds->iv0 = iv0;
     scheds->iv1 = iv1;
 }
 
 static void des_3cbc_decrypt(unsigned char *blk,
-			     unsigned int len, DESContext * scheds)
+                 unsigned int len, DESContext * scheds)
 {
     des_cbc_decrypt(blk, len, &scheds[2]);
     des_cbc_encrypt(blk, len, &scheds[1]);
@@ -693,7 +693,7 @@ static void des_3cbc_decrypt(unsigned char *blk,
 }
 
 static void des_cbc3_decrypt(unsigned char *blk,
-			     unsigned int len, DESContext * scheds)
+                 unsigned int len, DESContext * scheds)
 {
     word32 out[2], iv0, iv1, xL, xR;
     unsigned int i;
@@ -703,25 +703,25 @@ static void des_cbc3_decrypt(unsigned char *blk,
     iv0 = scheds->iv0;
     iv1 = scheds->iv1;
     for (i = 0; i < len; i += 8) {
-	xL = GET_32BIT_MSB_FIRST(blk);
-	xR = GET_32BIT_MSB_FIRST(blk + 4);
-	des_decipher(out, xL, xR, &scheds[2]);
-	des_encipher(out, out[0], out[1], &scheds[1]);
-	des_decipher(out, out[0], out[1], &scheds[0]);
-	iv0 ^= out[0];
-	iv1 ^= out[1];
-	PUT_32BIT_MSB_FIRST(blk, iv0);
-	PUT_32BIT_MSB_FIRST(blk + 4, iv1);
-	blk += 8;
-	iv0 = xL;
-	iv1 = xR;
+    xL = GET_32BIT_MSB_FIRST(blk);
+    xR = GET_32BIT_MSB_FIRST(blk + 4);
+    des_decipher(out, xL, xR, &scheds[2]);
+    des_encipher(out, out[0], out[1], &scheds[1]);
+    des_decipher(out, out[0], out[1], &scheds[0]);
+    iv0 ^= out[0];
+    iv1 ^= out[1];
+    PUT_32BIT_MSB_FIRST(blk, iv0);
+    PUT_32BIT_MSB_FIRST(blk + 4, iv1);
+    blk += 8;
+    iv0 = xL;
+    iv1 = xR;
     }
     scheds->iv0 = iv0;
     scheds->iv1 = iv1;
 }
 
 static void des_sdctr3(unsigned char *blk,
-			     unsigned int len, DESContext * scheds)
+                 unsigned int len, DESContext * scheds)
 {
     word32 b[2], iv0, iv1, tmp;
     unsigned int i;
@@ -731,17 +731,17 @@ static void des_sdctr3(unsigned char *blk,
     iv0 = scheds->iv0;
     iv1 = scheds->iv1;
     for (i = 0; i < len; i += 8) {
-	des_encipher(b, iv0, iv1, &scheds[0]);
-	des_decipher(b, b[0], b[1], &scheds[1]);
-	des_encipher(b, b[0], b[1], &scheds[2]);
-	tmp = GET_32BIT_MSB_FIRST(blk);
-	PUT_32BIT_MSB_FIRST(blk, tmp ^ b[0]);
-	blk += 4;
-	tmp = GET_32BIT_MSB_FIRST(blk);
-	PUT_32BIT_MSB_FIRST(blk, tmp ^ b[1]);
-	blk += 4;
-	if ((iv1 = (iv1 + 1) & 0xffffffff) == 0)
-	    iv0 = (iv0 + 1) & 0xffffffff;
+    des_encipher(b, iv0, iv1, &scheds[0]);
+    des_decipher(b, b[0], b[1], &scheds[1]);
+    des_encipher(b, b[0], b[1], &scheds[2]);
+    tmp = GET_32BIT_MSB_FIRST(blk);
+    PUT_32BIT_MSB_FIRST(blk, tmp ^ b[0]);
+    blk += 4;
+    tmp = GET_32BIT_MSB_FIRST(blk);
+    PUT_32BIT_MSB_FIRST(blk, tmp ^ b[1]);
+    blk += 4;
+    if ((iv1 = (iv1 + 1) & 0xffffffff) == 0)
+        iv0 = (iv0 + 1) & 0xffffffff;
     }
     scheds->iv0 = iv0;
     scheds->iv1 = iv1;
@@ -778,11 +778,11 @@ static void des3_key(void *handle, unsigned char *key)
 {
     DESContext *keys = (DESContext *) handle;
     des_key_setup(GET_32BIT_MSB_FIRST(key),
-		  GET_32BIT_MSB_FIRST(key + 4), &keys[0]);
+          GET_32BIT_MSB_FIRST(key + 4), &keys[0]);
     des_key_setup(GET_32BIT_MSB_FIRST(key + 8),
-		  GET_32BIT_MSB_FIRST(key + 12), &keys[1]);
+          GET_32BIT_MSB_FIRST(key + 12), &keys[1]);
     des_key_setup(GET_32BIT_MSB_FIRST(key + 16),
-		  GET_32BIT_MSB_FIRST(key + 20), &keys[2]);
+          GET_32BIT_MSB_FIRST(key + 20), &keys[2]);
 }
 
 static void des3_iv(void *handle, unsigned char *key)
@@ -796,7 +796,7 @@ static void des_key(void *handle, unsigned char *key)
 {
     DESContext *keys = (DESContext *) handle;
     des_key_setup(GET_32BIT_MSB_FIRST(key),
-		  GET_32BIT_MSB_FIRST(key + 4), &keys[0]);
+          GET_32BIT_MSB_FIRST(key + 4), &keys[0]);
 }
 
 static void des3_sesskey(void *handle, unsigned char *key)
@@ -852,11 +852,11 @@ void des3_decrypt_pubkey(unsigned char *key, unsigned char *blk, int len)
 {
     DESContext ourkeys[3];
     des_key_setup(GET_32BIT_MSB_FIRST(key),
-		  GET_32BIT_MSB_FIRST(key + 4), &ourkeys[0]);
+          GET_32BIT_MSB_FIRST(key + 4), &ourkeys[0]);
     des_key_setup(GET_32BIT_MSB_FIRST(key + 8),
-		  GET_32BIT_MSB_FIRST(key + 12), &ourkeys[1]);
+          GET_32BIT_MSB_FIRST(key + 12), &ourkeys[1]);
     des_key_setup(GET_32BIT_MSB_FIRST(key),
-		  GET_32BIT_MSB_FIRST(key + 4), &ourkeys[2]);
+          GET_32BIT_MSB_FIRST(key + 4), &ourkeys[2]);
     des_3cbc_decrypt(blk, len, ourkeys);
     smemclr(ourkeys, sizeof(ourkeys));
 }
@@ -865,25 +865,25 @@ void des3_encrypt_pubkey(unsigned char *key, unsigned char *blk, int len)
 {
     DESContext ourkeys[3];
     des_key_setup(GET_32BIT_MSB_FIRST(key),
-		  GET_32BIT_MSB_FIRST(key + 4), &ourkeys[0]);
+          GET_32BIT_MSB_FIRST(key + 4), &ourkeys[0]);
     des_key_setup(GET_32BIT_MSB_FIRST(key + 8),
-		  GET_32BIT_MSB_FIRST(key + 12), &ourkeys[1]);
+          GET_32BIT_MSB_FIRST(key + 12), &ourkeys[1]);
     des_key_setup(GET_32BIT_MSB_FIRST(key),
-		  GET_32BIT_MSB_FIRST(key + 4), &ourkeys[2]);
+          GET_32BIT_MSB_FIRST(key + 4), &ourkeys[2]);
     des_3cbc_encrypt(blk, len, ourkeys);
     smemclr(ourkeys, sizeof(ourkeys));
 }
 
 void des3_decrypt_pubkey_ossh(unsigned char *key, unsigned char *iv,
-			      unsigned char *blk, int len)
+                  unsigned char *blk, int len)
 {
     DESContext ourkeys[3];
     des_key_setup(GET_32BIT_MSB_FIRST(key),
-		  GET_32BIT_MSB_FIRST(key + 4), &ourkeys[0]);
+          GET_32BIT_MSB_FIRST(key + 4), &ourkeys[0]);
     des_key_setup(GET_32BIT_MSB_FIRST(key + 8),
-		  GET_32BIT_MSB_FIRST(key + 12), &ourkeys[1]);
+          GET_32BIT_MSB_FIRST(key + 12), &ourkeys[1]);
     des_key_setup(GET_32BIT_MSB_FIRST(key + 16),
-		  GET_32BIT_MSB_FIRST(key + 20), &ourkeys[2]);
+          GET_32BIT_MSB_FIRST(key + 20), &ourkeys[2]);
     ourkeys[0].iv0 = GET_32BIT_MSB_FIRST(iv);
     ourkeys[0].iv1 = GET_32BIT_MSB_FIRST(iv+4);
     des_cbc3_decrypt(blk, len, ourkeys);
@@ -891,15 +891,15 @@ void des3_decrypt_pubkey_ossh(unsigned char *key, unsigned char *iv,
 }
 
 void des3_encrypt_pubkey_ossh(unsigned char *key, unsigned char *iv,
-			      unsigned char *blk, int len)
+                  unsigned char *blk, int len)
 {
     DESContext ourkeys[3];
     des_key_setup(GET_32BIT_MSB_FIRST(key),
-		  GET_32BIT_MSB_FIRST(key + 4), &ourkeys[0]);
+          GET_32BIT_MSB_FIRST(key + 4), &ourkeys[0]);
     des_key_setup(GET_32BIT_MSB_FIRST(key + 8),
-		  GET_32BIT_MSB_FIRST(key + 12), &ourkeys[1]);
+          GET_32BIT_MSB_FIRST(key + 12), &ourkeys[1]);
     des_key_setup(GET_32BIT_MSB_FIRST(key + 16),
-		  GET_32BIT_MSB_FIRST(key + 20), &ourkeys[2]);
+          GET_32BIT_MSB_FIRST(key + 20), &ourkeys[2]);
     ourkeys[0].iv0 = GET_32BIT_MSB_FIRST(iv);
     ourkeys[0].iv1 = GET_32BIT_MSB_FIRST(iv+4);
     des_cbc3_encrypt(blk, len, ourkeys);
@@ -916,14 +916,14 @@ static void des_keysetup_xdmauth(const unsigned char *keydata, DESContext *dc)
     nbits = 0;
     j = 0;
     for (i = 0; i < 8; i++) {
-	if (nbits < 7) {
-	    bits = (bits << 8) | keydata[j];
-	    nbits += 8;
-	    j++;
-	}
-	key[i] = (bits >> (nbits - 7)) << 1;
-	bits &= ~(0x7F << (nbits - 7));
-	nbits -= 7;
+    if (nbits < 7) {
+        bits = (bits << 8) | keydata[j];
+        nbits += 8;
+        j++;
+    }
+    key[i] = (bits >> (nbits - 7)) << 1;
+    bits &= ~(0x7F << (nbits - 7));
+    nbits -= 7;
     }
 
     des_key_setup(GET_32BIT_MSB_FIRST(key), GET_32BIT_MSB_FIRST(key + 4), dc);
