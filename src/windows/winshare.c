@@ -16,7 +16,6 @@
 
 #include "wincapi.h"
 
-#ifdef COVERITY
 /*
  * The hack I use to build for Coverity scanning, using winegcc and
  * Makefile.cyg, didn't provide some defines in wincrypt.h last time I
@@ -29,7 +28,6 @@
 #endif
 #ifndef CRYPTPROTECTMEMORY_CROSS_PROCESS
 #define CRYPTPROTECTMEMORY_CROSS_PROCESS 1
-#endif
 #endif
 
 #define CONNSHARE_PIPE_PREFIX "\\\\.\\pipe\\putty-connshare"
