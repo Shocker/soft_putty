@@ -44,7 +44,7 @@ static Plug sk_namedpipeserver_plug(Socket s, Plug p)
     Named_Pipe_Server_Socket ps = (Named_Pipe_Server_Socket) s;
     Plug ret = ps->plug;
     if (p)
-	ps->plug = p;
+    ps->plug = p;
     return ret;
 }
 
@@ -209,15 +209,15 @@ Socket new_named_pipe_listener(const char *pipename, Plug plug)
      * be asked to write or flush or set_frozen.
      */
     static const struct socket_function_table socket_fn_table = {
-	sk_namedpipeserver_plug,
-	sk_namedpipeserver_close,
-	NULL /* write */,
-	NULL /* write_oob */,
+    sk_namedpipeserver_plug,
+    sk_namedpipeserver_close,
+    NULL /* write */,
+    NULL /* write_oob */,
         NULL /* write_eof */,
         NULL /* flush */,
         NULL /* set_frozen */,
-	sk_namedpipeserver_socket_error,
-	sk_namedpipeserver_peer_info,
+    sk_namedpipeserver_socket_error,
+    sk_namedpipeserver_peer_info,
     };
 
     Named_Pipe_Server_Socket ret;

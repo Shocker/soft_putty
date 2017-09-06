@@ -16,7 +16,7 @@ int get_userpass_input(prompts_t *p, unsigned char *in, int inlen)
     int ret;
     ret = cmdline_get_passwd_input(p, in, inlen);
     if (ret == -1)
-	ret = console_get_userpass_input(p, in, inlen);
+    ret = console_get_userpass_input(p, in, inlen);
     return ret;
 }
 
@@ -39,17 +39,17 @@ char *psftp_lcd(char *dir)
     char *ret = NULL;
 
     if (!SetCurrentDirectory(dir)) {
-	LPVOID message;
-	int i;
-	FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
-		      FORMAT_MESSAGE_FROM_SYSTEM |
-		      FORMAT_MESSAGE_IGNORE_INSERTS,
-		      NULL, GetLastError(),
-		      MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-		      (LPTSTR)&message, 0, NULL);
-	i = strcspn((char *)message, "\n");
-	ret = dupprintf("%.*s", i, (LPCTSTR)message);
-	LocalFree(message);
+    LPVOID message;
+    int i;
+    FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER |
+              FORMAT_MESSAGE_FROM_SYSTEM |
+              FORMAT_MESSAGE_IGNORE_INSERTS,
+              NULL, GetLastError(),
+              MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+              (LPTSTR)&message, 0, NULL);
+    i = strcspn((char *)message, "\n");
+    ret = dupprintf("%.*s", i, (LPCTSTR)message);
+    LocalFree(message);
     }
 
     return ret;
@@ -64,7 +64,7 @@ char *psftp_getcwd(void)
     char *ret = snewn(256, char);
     int len = GetCurrentDirectory(256, ret);
     if (len > 256)
-	ret = sresize(ret, len, char);
+    ret = sresize(ret, len, char);
     GetCurrentDirectory(len, ret);
     return ret;
 }
@@ -88,16 +88,16 @@ struct RFile {
 };
 
 RFile *open_existing_file(char *name, uint64 *size,
-			  unsigned long *mtime, unsigned long *atime,
+              unsigned long *mtime, unsigned long *atime,
                           long *perms)
 {
     HANDLE h;
     RFile *ret;
 
     h = CreateFile(name, GENERIC_READ, FILE_SHARE_READ, NULL,
-		   OPEN_EXISTING, 0, 0);
+           OPEN_EXISTING, 0, 0);
     if (h == INVALID_HANDLE_VALUE)
-	return NULL;
+    return NULL;
 
     ret = snew(RFile);
     ret->h = h;
@@ -106,12 +106,12 @@ RFile *open_existing_file(char *name, uint64 *size,
         size->lo=GetFileSize(h, &(size->hi));
 
     if (mtime || atime) {
-	FILETIME actime, wrtime;
-	GetFileTime(h, NULL, &actime, &wrtime);
-	if (atime)
-	    TIME_WIN_TO_POSIX(actime, *atime);
-	if (mtime)
-	    TIME_WIN_TO_POSIX(wrtime, *mtime);
+    FILETIME actime, wrtime;
+    GetFileTime(h, NULL, &actime, &wrtime);
+    if (atime)
+        TIME_WIN_TO_POSIX(actime, *atime);
+    if (mtime)
+        TIME_WIN_TO_POSIX(wrtime, *mtime);
     }
 
     if (perms)
@@ -126,9 +126,9 @@ int read_from_file(RFile *f, void *buffer, int length)
     DWORD read;
     ret = ReadFile(f->h, buffer, length, &read, NULL);
     if (!ret)
-	return -1;		       /* error */
+    return -1;               /* error */
     else
-	return read;
+    return read;
 }
 
 void close_rfile(RFile *f)
@@ -147,9 +147,9 @@ WFile *open_new_file(char *name, long perms)
     WFile *ret;
 
     h = CreateFile(name, GENERIC_WRITE, 0, NULL,
-		   CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
+           CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
     if (h == INVALID_HANDLE_VALUE)
-	return NULL;
+    return NULL;
 
     ret = snew(WFile);
     ret->h = h;
@@ -163,15 +163,15 @@ WFile *open_existing_wfile(char *name, uint64 *size)
     WFile *ret;
 
     h = CreateFile(name, GENERIC_WRITE, FILE_SHARE_READ, NULL,
-		   OPEN_EXISTING, 0, 0);
+           OPEN_EXISTING, 0, 0);
     if (h == INVALID_HANDLE_VALUE)
-	return NULL;
+    return NULL;
 
     ret = snew(WFile);
     ret->h = h;
 
     if (size)
-	size->lo=GetFileSize(h, &(size->hi));
+    size->lo=GetFileSize(h, &(size->hi));
 
     return ret;
 }
@@ -182,9 +182,9 @@ int write_to_file(WFile *f, void *buffer, int length)
     DWORD written;
     ret = WriteFile(f->h, buffer, length, &written, NULL);
     if (!ret)
-	return -1;		       /* error */
+    return -1;               /* error */
     else
-	return written;
+    return written;
 }
 
 void set_file_times(WFile *f, unsigned long mtime, unsigned long atime)
@@ -209,24 +209,24 @@ int seek_file(WFile *f, uint64 offset, int whence)
 
     switch (whence) {
     case FROM_START:
-	movemethod = FILE_BEGIN;
-	break;
+    movemethod = FILE_BEGIN;
+    break;
     case FROM_CURRENT:
-	movemethod = FILE_CURRENT;
-	break;
+    movemethod = FILE_CURRENT;
+    break;
     case FROM_END:
-	movemethod = FILE_END;
-	break;
+    movemethod = FILE_END;
+    break;
     default:
-	return -1;
+    return -1;
     }
 
     SetFilePointer(f->h, offset.lo, &(offset.hi), movemethod);
     
     if (GetLastError() != NO_ERROR)
-	return -1;
+    return -1;
     else 
-	return 0;
+    return 0;
 }
 
 uint64 get_file_posn(WFile *f)
@@ -245,11 +245,11 @@ int file_type(char *name)
     attr = GetFileAttributes(name);
     /* We know of no `weird' files under Windows. */
     if (attr == (DWORD)-1)
-	return FILE_TYPE_NONEXISTENT;
+    return FILE_TYPE_NONEXISTENT;
     else if (attr & FILE_ATTRIBUTE_DIRECTORY)
-	return FILE_TYPE_DIRECTORY;
+    return FILE_TYPE_DIRECTORY;
     else
-	return FILE_TYPE_FILE;
+    return FILE_TYPE_FILE;
 }
 
 struct DirHandle {
@@ -268,7 +268,7 @@ DirHandle *open_directory(char *name)
     findfile = dupcat(name, "/*", NULL);
     h = FindFirstFile(findfile, &fdat);
     if (h == INVALID_HANDLE_VALUE)
-	return NULL;
+    return NULL;
     sfree(findfile);
 
     ret = snew(DirHandle);
@@ -281,38 +281,38 @@ char *read_filename(DirHandle *dir)
 {
     do {
 
-	if (!dir->name) {
-	    WIN32_FIND_DATA fdat;
-	    int ok = FindNextFile(dir->h, &fdat);
-	    if (!ok)
-		return NULL;
-	    else
-		dir->name = dupstr(fdat.cFileName);
-	}
+    if (!dir->name) {
+        WIN32_FIND_DATA fdat;
+        int ok = FindNextFile(dir->h, &fdat);
+        if (!ok)
+        return NULL;
+        else
+        dir->name = dupstr(fdat.cFileName);
+    }
 
-	assert(dir->name);
-	if (dir->name[0] == '.' &&
-	    (dir->name[1] == '\0' ||
-	     (dir->name[1] == '.' && dir->name[2] == '\0'))) {
-	    sfree(dir->name);
-	    dir->name = NULL;
-	}
+    assert(dir->name);
+    if (dir->name[0] == '.' &&
+        (dir->name[1] == '\0' ||
+         (dir->name[1] == '.' && dir->name[2] == '\0'))) {
+        sfree(dir->name);
+        dir->name = NULL;
+    }
 
     } while (!dir->name);
 
     if (dir->name) {
-	char *ret = dir->name;
-	dir->name = NULL;
-	return ret;
+    char *ret = dir->name;
+    dir->name = NULL;
+    return ret;
     } else
-	return NULL;
+    return NULL;
 }
 
 void close_directory(DirHandle *dir)
 {
     FindClose(dir->h);
     if (dir->name)
-	sfree(dir->name);
+    sfree(dir->name);
     sfree(dir);
 }
 
@@ -323,12 +323,12 @@ int test_wildcard(char *name, int cmdline)
 
     /* First see if the exact name exists. */
     if (GetFileAttributes(name) != (DWORD)-1)
-	return WCTYPE_FILENAME;
+    return WCTYPE_FILENAME;
 
     /* Otherwise see if a wildcard match finds anything. */
     fh = FindFirstFile(name, &fdat);
     if (fh == INVALID_HANDLE_VALUE)
-	return WCTYPE_NONEXISTENT;
+    return WCTYPE_NONEXISTENT;
 
     FindClose(fh);
     return WCTYPE_WILDCARD;
@@ -357,8 +357,8 @@ static char *stripslashes(char *str, int local)
     if (p) str = p+1;
 
     if (local) {
-	p = strrchr(str, '\\');
-	if (p) str = p+1;
+    p = strrchr(str, '\\');
+    if (p) str = p+1;
     }
 
     return str;
@@ -373,7 +373,7 @@ WildcardMatcher *begin_wildcard_matching(char *name)
 
     h = FindFirstFile(name, &fdat);
     if (h == INVALID_HANDLE_VALUE)
-	return NULL;
+    return NULL;
 
     ret = snew(WildcardMatcher);
     ret->h = h;
@@ -381,11 +381,11 @@ WildcardMatcher *begin_wildcard_matching(char *name)
     last = stripslashes(ret->srcpath, 1);
     *last = '\0';
     if (fdat.cFileName[0] == '.' &&
-	(fdat.cFileName[1] == '\0' ||
-	 (fdat.cFileName[1] == '.' && fdat.cFileName[2] == '\0')))
-	ret->name = NULL;
+    (fdat.cFileName[1] == '\0' ||
+     (fdat.cFileName[1] == '.' && fdat.cFileName[2] == '\0')))
+    ret->name = NULL;
     else
-	ret->name = dupcat(ret->srcpath, fdat.cFileName, NULL);
+    ret->name = dupcat(ret->srcpath, fdat.cFileName, NULL);
 
     return ret;
 }
@@ -393,33 +393,33 @@ WildcardMatcher *begin_wildcard_matching(char *name)
 char *wildcard_get_filename(WildcardMatcher *dir)
 {
     while (!dir->name) {
-	WIN32_FIND_DATA fdat;
-	int ok = FindNextFile(dir->h, &fdat);
+    WIN32_FIND_DATA fdat;
+    int ok = FindNextFile(dir->h, &fdat);
 
-	if (!ok)
-	    return NULL;
+    if (!ok)
+        return NULL;
 
-	if (fdat.cFileName[0] == '.' &&
-	    (fdat.cFileName[1] == '\0' ||
-	     (fdat.cFileName[1] == '.' && fdat.cFileName[2] == '\0')))
-	    dir->name = NULL;
-	else
-	    dir->name = dupcat(dir->srcpath, fdat.cFileName, NULL);
+    if (fdat.cFileName[0] == '.' &&
+        (fdat.cFileName[1] == '\0' ||
+         (fdat.cFileName[1] == '.' && fdat.cFileName[2] == '\0')))
+        dir->name = NULL;
+    else
+        dir->name = dupcat(dir->srcpath, fdat.cFileName, NULL);
     }
 
     if (dir->name) {
-	char *ret = dir->name;
-	dir->name = NULL;
-	return ret;
+    char *ret = dir->name;
+    dir->name = NULL;
+    return ret;
     } else
-	return NULL;
+    return NULL;
 }
 
 void finish_wildcard_matching(WildcardMatcher *dir)
 {
     FindClose(dir->h);
     if (dir->name)
-	sfree(dir->name);
+    sfree(dir->name);
     sfree(dir->srcpath);
     sfree(dir);
 }
@@ -427,10 +427,10 @@ void finish_wildcard_matching(WildcardMatcher *dir)
 int vet_filename(char *name)
 {
     if (strchr(name, '/') || strchr(name, '\\') || strchr(name, ':'))
-	return FALSE;
+    return FALSE;
 
     if (!name[strspn(name, ".")])      /* entirely composed of dots */
-	return FALSE;
+    return FALSE;
 
     return TRUE;
 }
@@ -458,26 +458,26 @@ char *do_select(SOCKET skt, int startup)
 {
     int events;
     if (startup)
-	sftp_ssh_socket = skt;
+    sftp_ssh_socket = skt;
     else
-	sftp_ssh_socket = INVALID_SOCKET;
+    sftp_ssh_socket = INVALID_SOCKET;
 
     if (p_WSAEventSelect) {
-	if (startup) {
-	    events = (FD_CONNECT | FD_READ | FD_WRITE |
-		      FD_OOB | FD_CLOSE | FD_ACCEPT);
-	    netevent = CreateEvent(NULL, FALSE, FALSE, NULL);
-	} else {
-	    events = 0;
-	}
-	if (p_WSAEventSelect(skt, netevent, events) == SOCKET_ERROR) {
-	    switch (p_WSAGetLastError()) {
-	      case WSAENETDOWN:
-		return "Network is down";
-	      default:
-		return "WSAEventSelect(): unknown error";
-	    }
-	}
+    if (startup) {
+        events = (FD_CONNECT | FD_READ | FD_WRITE |
+              FD_OOB | FD_CLOSE | FD_ACCEPT);
+        netevent = CreateEvent(NULL, FALSE, FALSE, NULL);
+    } else {
+        events = 0;
+    }
+    if (p_WSAEventSelect(skt, netevent, events) == SOCKET_ERROR) {
+        switch (p_WSAGetLastError()) {
+          case WSAENETDOWN:
+        return "Network is down";
+          default:
+        return "WSAEventSelect(): unknown error";
+        }
+    }
     }
     return NULL;
 }
@@ -497,14 +497,14 @@ int do_eventsel_loop(HANDLE other_event)
         ticks = 0;
         next = now;
     } else if (run_timers(now, &next)) {
-	then = now;
-	now = GETTICKCOUNT();
-	if (now - then > next - then)
-	    ticks = 0;
-	else
-	    ticks = next - now;
+    then = now;
+    now = GETTICKCOUNT();
+    if (now - then > next - then)
+        ticks = 0;
+    else
+        ticks = next - now;
     } else {
-	ticks = INFINITE;
+    ticks = INFINITE;
         /* no need to initialise next here because we can never get
          * WAIT_TIMEOUT */
     }
@@ -514,78 +514,78 @@ int do_eventsel_loop(HANDLE other_event)
     nallhandles = nhandles;
 
     if (netevent != INVALID_HANDLE_VALUE)
-	handles[netindex = nallhandles++] = netevent;
+    handles[netindex = nallhandles++] = netevent;
     else
-	netindex = -1;
+    netindex = -1;
     if (other_event != INVALID_HANDLE_VALUE)
-	handles[otherindex = nallhandles++] = other_event;
+    handles[otherindex = nallhandles++] = other_event;
     else
-	otherindex = -1;
+    otherindex = -1;
 
     n = WaitForMultipleObjects(nallhandles, handles, FALSE, ticks);
 
     if ((unsigned)(n - WAIT_OBJECT_0) < (unsigned)nhandles) {
-	handle_got_event(handles[n - WAIT_OBJECT_0]);
+    handle_got_event(handles[n - WAIT_OBJECT_0]);
     } else if (netindex >= 0 && n == WAIT_OBJECT_0 + netindex) {
-	WSANETWORKEVENTS things;
-	SOCKET socket;
-	extern SOCKET first_socket(int *), next_socket(int *);
-	extern int select_result(WPARAM, LPARAM);
-	int i, socketstate;
+    WSANETWORKEVENTS things;
+    SOCKET socket;
+    extern SOCKET first_socket(int *), next_socket(int *);
+    extern int select_result(WPARAM, LPARAM);
+    int i, socketstate;
 
-	/*
-	 * We must not call select_result() for any socket
-	 * until we have finished enumerating within the
-	 * tree. This is because select_result() may close
-	 * the socket and modify the tree.
-	 */
-	/* Count the active sockets. */
-	i = 0;
-	for (socket = first_socket(&socketstate);
-	     socket != INVALID_SOCKET;
-	     socket = next_socket(&socketstate)) i++;
+    /*
+     * We must not call select_result() for any socket
+     * until we have finished enumerating within the
+     * tree. This is because select_result() may close
+     * the socket and modify the tree.
+     */
+    /* Count the active sockets. */
+    i = 0;
+    for (socket = first_socket(&socketstate);
+         socket != INVALID_SOCKET;
+         socket = next_socket(&socketstate)) i++;
 
-	/* Expand the buffer if necessary. */
-	sklist = snewn(i, SOCKET);
+    /* Expand the buffer if necessary. */
+    sklist = snewn(i, SOCKET);
 
-	/* Retrieve the sockets into sklist. */
-	skcount = 0;
-	for (socket = first_socket(&socketstate);
-	     socket != INVALID_SOCKET;
-	     socket = next_socket(&socketstate)) {
-	    sklist[skcount++] = socket;
-	}
+    /* Retrieve the sockets into sklist. */
+    skcount = 0;
+    for (socket = first_socket(&socketstate);
+         socket != INVALID_SOCKET;
+         socket = next_socket(&socketstate)) {
+        sklist[skcount++] = socket;
+    }
 
-	/* Now we're done enumerating; go through the list. */
-	for (i = 0; i < skcount; i++) {
-	    WPARAM wp;
-	    socket = sklist[i];
-	    wp = (WPARAM) socket;
-	    if (!p_WSAEnumNetworkEvents(socket, NULL, &things)) {
-		static const struct { int bit, mask; } eventtypes[] = {
-		    {FD_CONNECT_BIT, FD_CONNECT},
-		    {FD_READ_BIT, FD_READ},
-		    {FD_CLOSE_BIT, FD_CLOSE},
-		    {FD_OOB_BIT, FD_OOB},
-		    {FD_WRITE_BIT, FD_WRITE},
-		    {FD_ACCEPT_BIT, FD_ACCEPT},
-		};
-		int e;
+    /* Now we're done enumerating; go through the list. */
+    for (i = 0; i < skcount; i++) {
+        WPARAM wp;
+        socket = sklist[i];
+        wp = (WPARAM) socket;
+        if (!p_WSAEnumNetworkEvents(socket, NULL, &things)) {
+        static const struct { int bit, mask; } eventtypes[] = {
+            {FD_CONNECT_BIT, FD_CONNECT},
+            {FD_READ_BIT, FD_READ},
+            {FD_CLOSE_BIT, FD_CLOSE},
+            {FD_OOB_BIT, FD_OOB},
+            {FD_WRITE_BIT, FD_WRITE},
+            {FD_ACCEPT_BIT, FD_ACCEPT},
+        };
+        int e;
 
-		noise_ultralight(socket);
-		noise_ultralight(things.lNetworkEvents);
+        noise_ultralight(socket);
+        noise_ultralight(things.lNetworkEvents);
 
-		for (e = 0; e < lenof(eventtypes); e++)
-		    if (things.lNetworkEvents & eventtypes[e].mask) {
-			LPARAM lp;
-			int err = things.iErrorCode[eventtypes[e].bit];
-			lp = WSAMAKESELECTREPLY(eventtypes[e].mask, err);
-			select_result(wp, lp);
-		    }
-	    }
-	}
+        for (e = 0; e < lenof(eventtypes); e++)
+            if (things.lNetworkEvents & eventtypes[e].mask) {
+            LPARAM lp;
+            int err = things.iErrorCode[eventtypes[e].bit];
+            lp = WSAMAKESELECTREPLY(eventtypes[e].mask, err);
+            select_result(wp, lp);
+            }
+        }
+    }
 
-	sfree(sklist);
+    sfree(sklist);
     }
 
     sfree(handles);
@@ -593,13 +593,13 @@ int do_eventsel_loop(HANDLE other_event)
     run_toplevel_callbacks();
 
     if (n == WAIT_TIMEOUT) {
-	now = next;
+    now = next;
     } else {
-	now = GETTICKCOUNT();
+    now = GETTICKCOUNT();
     }
 
     if (otherindex >= 0 && n == WAIT_OBJECT_0 + otherindex)
-	return 1;
+    return 1;
 
     return 0;
 }
@@ -616,53 +616,53 @@ int do_eventsel_loop(HANDLE other_event)
 int ssh_sftp_loop_iteration(void)
 {
     if (p_WSAEventSelect == NULL) {
-	fd_set readfds;
-	int ret;
-	unsigned long now = GETTICKCOUNT(), then;
+    fd_set readfds;
+    int ret;
+    unsigned long now = GETTICKCOUNT(), then;
 
-	if (sftp_ssh_socket == INVALID_SOCKET)
-	    return -1;		       /* doom */
+    if (sftp_ssh_socket == INVALID_SOCKET)
+        return -1;               /* doom */
 
-	if (socket_writable(sftp_ssh_socket))
-	    select_result((WPARAM) sftp_ssh_socket, (LPARAM) FD_WRITE);
+    if (socket_writable(sftp_ssh_socket))
+        select_result((WPARAM) sftp_ssh_socket, (LPARAM) FD_WRITE);
 
-	do {
-	    unsigned long next;
-	    long ticks;
-	    struct timeval tv, *ptv;
+    do {
+        unsigned long next;
+        long ticks;
+        struct timeval tv, *ptv;
 
-	    if (run_timers(now, &next)) {
-		then = now;
-		now = GETTICKCOUNT();
-		if (now - then > next - then)
-		    ticks = 0;
-		else
-		    ticks = next - now;
-		tv.tv_sec = ticks / 1000;
-		tv.tv_usec = ticks % 1000 * 1000;
-		ptv = &tv;
-	    } else {
-		ptv = NULL;
-	    }
+        if (run_timers(now, &next)) {
+        then = now;
+        now = GETTICKCOUNT();
+        if (now - then > next - then)
+            ticks = 0;
+        else
+            ticks = next - now;
+        tv.tv_sec = ticks / 1000;
+        tv.tv_usec = ticks % 1000 * 1000;
+        ptv = &tv;
+        } else {
+        ptv = NULL;
+        }
 
-	    FD_ZERO(&readfds);
-	    FD_SET(sftp_ssh_socket, &readfds);
-	    ret = p_select(1, &readfds, NULL, NULL, ptv);
+        FD_ZERO(&readfds);
+        FD_SET(sftp_ssh_socket, &readfds);
+        ret = p_select(1, &readfds, NULL, NULL, ptv);
 
-	    if (ret < 0)
-		return -1;		       /* doom */
-	    else if (ret == 0)
-		now = next;
-	    else
-		now = GETTICKCOUNT();
+        if (ret < 0)
+        return -1;               /* doom */
+        else if (ret == 0)
+        now = next;
+        else
+        now = GETTICKCOUNT();
 
-	} while (ret == 0);
+    } while (ret == 0);
 
-	select_result((WPARAM) sftp_ssh_socket, (LPARAM) FD_READ);
+    select_result((WPARAM) sftp_ssh_socket, (LPARAM) FD_READ);
 
-	return 0;
+    return 0;
     } else {
-	return do_eventsel_loop(INVALID_HANDLE_VALUE);
+    return do_eventsel_loop(INVALID_HANDLE_VALUE);
     }
 }
 
@@ -702,8 +702,8 @@ char *ssh_sftp_get_cmdline(char *prompt, int no_fds_ok)
     fflush(stdout);
 
     if ((sftp_ssh_socket == INVALID_SOCKET && no_fds_ok) ||
-	p_WSAEventSelect == NULL) {
-	return fgetline(stdin);	       /* very simple */
+    p_WSAEventSelect == NULL) {
+    return fgetline(stdin);           /* very simple */
     }
 
     /*
@@ -715,16 +715,16 @@ char *ssh_sftp_get_cmdline(char *prompt, int no_fds_ok)
 
     hThread = CreateThread(NULL, 0, command_read_thread, ctx, 0, &threadid);
     if (!hThread) {
-	CloseHandle(ctx->event);
-	fprintf(stderr, "Unable to create command input thread\n");
-	cleanup_exit(1);
+    CloseHandle(ctx->event);
+    fprintf(stderr, "Unable to create command input thread\n");
+    cleanup_exit(1);
     }
 
     do {
-	ret = do_eventsel_loop(ctx->event);
+    ret = do_eventsel_loop(ctx->event);
 
-	/* Error return can only occur if netevent==NULL, and it ain't. */
-	assert(ret >= 0);
+    /* Error return can only occur if netevent==NULL, and it ain't. */
+    assert(ret >= 0);
     } while (ret == 0);
 
     CloseHandle(hThread);

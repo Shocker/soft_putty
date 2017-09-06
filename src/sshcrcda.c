@@ -1,4 +1,4 @@
-/*	$OpenBSD: deattack.c,v 1.14 2001/06/23 15:12:18 itojun Exp $	*/
+/*    $OpenBSD: deattack.c,v 1.14 2001/06/23 15:12:18 itojun Exp $    */
 
 /*
  * Cryptographic attack detector for ssh - source code
@@ -29,23 +29,23 @@ typedef unsigned char uchar;
 typedef unsigned short uint16;
 
 /* SSH Constants */
-#define SSH_MAXBLOCKS	(32 * 1024)
-#define SSH_BLOCKSIZE	(8)
+#define SSH_MAXBLOCKS    (32 * 1024)
+#define SSH_BLOCKSIZE    (8)
 
 /* Hashing constants */
-#define HASH_MINSIZE	(8 * 1024)
-#define HASH_ENTRYSIZE	(sizeof(uint16))
-#define HASH_FACTOR(x)	((x)*3/2)
-#define HASH_UNUSEDCHAR	(0xff)
-#define HASH_UNUSED	(0xffff)
-#define HASH_IV     	(0xfffe)
+#define HASH_MINSIZE    (8 * 1024)
+#define HASH_ENTRYSIZE    (sizeof(uint16))
+#define HASH_FACTOR(x)    ((x)*3/2)
+#define HASH_UNUSEDCHAR    (0xff)
+#define HASH_UNUSED    (0xffff)
+#define HASH_IV         (0xfffe)
 
-#define HASH_MINBLOCKS	(7*SSH_BLOCKSIZE)
+#define HASH_MINBLOCKS    (7*SSH_BLOCKSIZE)
 
 /* Hash function (Input keys are cipher results) */
-#define HASH(x)		GET_32BIT_MSB_FIRST(x)
+#define HASH(x)        GET_32BIT_MSB_FIRST(x)
 
-#define CMP(a, b)	(memcmp(a, b, SSH_BLOCKSIZE))
+#define CMP(a, b)    (memcmp(a, b, SSH_BLOCKSIZE))
 
 uchar ONE[4] = { 1, 0, 0, 0 };
 uchar ZERO[4] = { 0, 0, 0, 0 };
@@ -67,9 +67,9 @@ void crcda_free_context(void *handle)
 {
     struct crcda_ctx *ctx = (struct crcda_ctx *)handle;
     if (ctx) {
-	sfree(ctx->h);
-	ctx->h = NULL;
-	sfree(ctx);
+    sfree(ctx->h);
+    ctx->h = NULL;
+    sfree(ctx);
     }
 }
 

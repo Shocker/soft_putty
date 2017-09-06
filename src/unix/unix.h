@@ -5,10 +5,10 @@
 # include "uxconfig.h" /* Space to hide it from mkfiles.pl */
 #endif
 
-#include <stdio.h>		       /* for FILENAME_MAX */
-#include <stdint.h>		       /* C99 int types */
+#include <stdio.h>               /* for FILENAME_MAX */
+#include <stdint.h>               /* C99 int types */
 #ifndef NO_LIBDL
-#include <dlfcn.h>		       /* Dynamic library loading */
+#include <dlfcn.h>               /* Dynamic library loading */
 #endif /*  NO_LIBDL */
 #include "charset.h"
 
@@ -53,10 +53,10 @@ typedef uint32_t uint32; /* C99: uint32_t defined in stdint.h */
 #define SEL_NL { 10 }
 
 /* Simple wraparound timer function */
-unsigned long getticks(void);	       /* based on gettimeofday(2) */
+unsigned long getticks(void);           /* based on gettimeofday(2) */
 #define GETTICKCOUNT getticks
-#define TICKSPERSEC    1000	       /* we choose to use milliseconds */
-#define CURSORBLINK     450	       /* no standard way to set this */
+#define TICKSPERSEC    1000           /* we choose to use milliseconds */
+#define CURSORBLINK     450           /* no standard way to set this */
 
 #define WCHAR wchar_t
 #define BYTE unsigned char
@@ -84,7 +84,7 @@ void *get_window(void *frontend);      /* void * to avoid depending on gtk.h */
 
 /* Things pterm.c needs from gtkdlg.c */
 int do_config_box(const char *title, Conf *conf,
-		  int midsession, int protcfginfo);
+          int midsession, int protcfginfo);
 void fatal_message_box(void *window, char *msg);
 void nonfatal_message_box(void *window, char *msg);
 void about_box(void *window);
@@ -145,7 +145,7 @@ void gtk_setup_config_box(struct controlbox *b, int midsession, void *window);
  * from the command line or config files is assumed to be encoded).
  */
 #define DEFAULT_CODEPAGE 0xFFFF
-#define CP_UTF8 CS_UTF8		       /* from libcharset */
+#define CP_UTF8 CS_UTF8               /* from libcharset */
 
 #define strnicmp strncasecmp
 #define stricmp strcasecmp
@@ -165,7 +165,7 @@ int no_nonblock(int);
  */
 struct unicode_data;
 int init_ucs(struct unicode_data *ucsdata, char *line_codepage,
-	     int utf8_override, int font_charset, int vtmode);
+         int utf8_override, int font_charset, int vtmode);
 
 /*
  * Spare function exported directly from uxnet.c.

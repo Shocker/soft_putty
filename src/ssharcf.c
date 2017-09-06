@@ -20,16 +20,16 @@ static void arcfour_block(void *handle, unsigned char *blk, int len)
     s = ctx->s;
     i = ctx->i; j = ctx->j;
     for (k = 0; (int)k < len; k++) {
-	i  = (i + 1) & 0xff;
-	j  = (j + s[i]) & 0xff;
-	tmp = s[i]; s[i] = s[j]; s[j] = tmp;
-	blk[k] ^= s[(s[i]+s[j]) & 0xff];
+    i  = (i + 1) & 0xff;
+    j  = (j + s[i]) & 0xff;
+    tmp = s[i]; s[i] = s[j]; s[j] = tmp;
+    blk[k] ^= s[(s[i]+s[j]) & 0xff];
     }
     ctx->i = i; ctx->j = j;
 }
 
 static void arcfour_setkey(ArcfourContext *ctx, unsigned char const *key,
-			   unsigned keybytes)
+               unsigned keybytes)
 {
     unsigned char tmp, k[256], *s;
     unsigned i, j;
@@ -38,13 +38,13 @@ static void arcfour_setkey(ArcfourContext *ctx, unsigned char const *key,
     assert(keybytes <= 256);
     ctx->i = ctx->j = 0;
     for (i = 0; i < 256; i++) {
-	s[i] = i;
-	k[i] = key[i % keybytes];
+    s[i] = i;
+    k[i] = key[i % keybytes];
     }
     j = 0;
     for (i = 0; i < 256; i++) {
-	j = (j + s[i] + k[i]) & 0xff;
-	tmp = s[i]; s[i] = s[j]; s[j] = tmp;
+    j = (j + s[i] + k[i]) & 0xff;
+    tmp = s[i]; s[i] = s[j]; s[j] = tmp;
     }
 }
 

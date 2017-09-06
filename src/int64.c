@@ -26,7 +26,7 @@ uint64 uint64_div10(uint64 x, int *remainder)
     rem %= 10;
 
     if (remainder)
-	*remainder = rem;
+    *remainder = rem;
     return y;
 }
 
@@ -37,9 +37,9 @@ void uint64_decimal(uint64 x, char *buffer)
     int d;
 
     do {
-	x = uint64_div10(x, &d);
-	assert(start > 0);
-	buf[--start] = d + '0';
+    x = uint64_div10(x, &d);
+    assert(start > 0);
+    buf[--start] = d + '0';
     } while (x.hi || x.lo);
 
     memcpy(buffer, buf + start, sizeof(buf) - start);
@@ -72,9 +72,9 @@ uint64 uint64_add32(uint64 x, unsigned long y)
 int uint64_compare(uint64 x, uint64 y)
 {
     if (x.hi != y.hi)
-	return x.hi < y.hi ? -1 : +1;
+    return x.hi < y.hi ? -1 : +1;
     if (x.lo != y.lo)
-	return x.lo < y.lo ? -1 : +1;
+    return x.lo < y.lo ? -1 : +1;
     return 0;
 }
 
@@ -93,12 +93,12 @@ double uint64_to_double(uint64 x)
 uint64 uint64_shift_right(uint64 x, int shift)
 {
     if (shift < 32) {
-	x.lo >>= shift;
-	x.lo |= (x.hi << (32-shift)) & 0xFFFFFFFFU;
-	x.hi >>= shift;
+    x.lo >>= shift;
+    x.lo |= (x.hi << (32-shift)) & 0xFFFFFFFFU;
+    x.hi >>= shift;
     } else {
-	x.lo = x.hi >> (shift-32);
-	x.hi = 0;
+    x.lo = x.hi >> (shift-32);
+    x.hi = 0;
     }
     return x;
 }
@@ -106,12 +106,12 @@ uint64 uint64_shift_right(uint64 x, int shift)
 uint64 uint64_shift_left(uint64 x, int shift)
 {
     if (shift < 32) {
-	x.hi = (x.hi << shift) & 0xFFFFFFFFU;
-	x.hi |= (x.lo >> (32-shift));
-	x.lo = (x.lo << shift) & 0xFFFFFFFFU;
+    x.hi = (x.hi << shift) & 0xFFFFFFFFU;
+    x.hi |= (x.lo >> (32-shift));
+    x.lo = (x.lo << shift) & 0xFFFFFFFFU;
     } else {
-	x.hi = (x.lo << (shift-32)) & 0xFFFFFFFFU;
-	x.lo = 0;
+    x.hi = (x.lo << (shift-32)) & 0xFFFFFFFFU;
+    x.lo = 0;
     }
     return x;
 }
@@ -121,10 +121,10 @@ uint64 uint64_from_decimal(char *str)
     uint64 ret;
     ret.hi = ret.lo = 0;
     while (*str >= '0' && *str <= '9') {
-	ret = uint64_add(uint64_shift_left(ret, 3),
-			 uint64_shift_left(ret, 1));
-	ret = uint64_add32(ret, *str - '0');
-	str++;
+    ret = uint64_add(uint64_shift_left(ret, 3),
+             uint64_shift_left(ret, 1));
+    ret = uint64_add32(ret, *str - '0');
+    str++;
     }
     return ret;
 }

@@ -232,14 +232,14 @@ int setprocessacl(char *error)
     PACL acl = NULL;
 
     static const nastyace=WRITE_DAC | WRITE_OWNER |
-	PROCESS_CREATE_PROCESS | PROCESS_CREATE_THREAD |
-	PROCESS_DUP_HANDLE | PROCESS_QUERY_INFORMATION |
-	PROCESS_SET_QUOTA | PROCESS_SET_INFORMATION |
-	PROCESS_VM_OPERATION | PROCESS_VM_READ | PROCESS_VM_WRITE |
-	PROCESS_SUSPEND_RESUME;
+    PROCESS_CREATE_PROCESS | PROCESS_CREATE_THREAD |
+    PROCESS_DUP_HANDLE | PROCESS_QUERY_INFORMATION |
+    PROCESS_SET_QUOTA | PROCESS_SET_INFORMATION |
+    PROCESS_VM_OPERATION | PROCESS_VM_READ | PROCESS_VM_WRITE |
+    PROCESS_SUSPEND_RESUME;
 
     if (!getsids(error))
-	goto cleanup;
+    goto cleanup;
 
     memset(ea, 0, sizeof(ea));
 
@@ -260,8 +260,8 @@ int setprocessacl(char *error)
     acl_err = p_SetEntriesInAclA(2, ea, NULL, &acl);
 
     if (acl_err != ERROR_SUCCESS || acl == NULL) {
-	error = dupprintf("unable to construct ACL: %s",
-			  win_strerror(acl_err));
+    error = dupprintf("unable to construct ACL: %s",
+              win_strerror(acl_err));
         goto cleanup;
     }
 
@@ -269,11 +269,11 @@ int setprocessacl(char *error)
         (GetCurrentProcess(), SE_KERNEL_OBJECT,
          OWNER_SECURITY_INFORMATION | DACL_SECURITY_INFORMATION,
          usersid, NULL, acl, NULL)) {
-	error=dupprintf("Unable to set process ACL: %s",
-			win_strerror(GetLastError()));
-	goto cleanup;
+    error=dupprintf("Unable to set process ACL: %s",
+            win_strerror(GetLastError()));
+    goto cleanup;
     }
-		      
+              
 
     ret=TRUE;
     

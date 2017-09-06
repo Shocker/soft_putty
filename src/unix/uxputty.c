@@ -16,7 +16,7 @@
  * Stubs to avoid uxpty.c needing to be linked in.
  */
 const int use_pty_argv = FALSE;
-char **pty_argv;		       /* never used */
+char **pty_argv;               /* never used */
 
 /*
  * Clean up and exit.
@@ -84,7 +84,7 @@ int process_nonoption_arg(char *arg, Conf *conf, int *allow_launch)
             conf_set_int(conf, CONF_port, atoi(p));
         else
             conf_set_int(conf, CONF_port, -1);
-	conf_set_str(conf, CONF_host, q);
+    conf_set_str(conf, CONF_host, q);
         got_host = 1;
     } else {
         /*
@@ -99,7 +99,7 @@ int process_nonoption_arg(char *arg, Conf *conf, int *allow_launch)
         got_host = 1;
     }
     if (got_host)
-	*allow_launch = TRUE;
+    *allow_launch = TRUE;
     return 1;
 }
 
@@ -116,8 +116,8 @@ char *platform_get_x_display(void) {
     const char *display;
     /* Try to take account of --display and what have you. */
     if (!(display = gdk_get_display()))
-	/* fall back to traditional method */
-	display = getenv("DISPLAY");
+    /* fall back to traditional method */
+    display = getenv("DISPLAY");
     return dupstr(display);
 }
 
@@ -134,10 +134,10 @@ int main(int argc, char **argv)
     default_protocol = be_default_protocol;
     /* Find the appropriate default port. */
     {
-	Backend *b = backend_from_proto(default_protocol);
-	default_port = 0; /* illegal */
-	if (b)
-	    default_port = b->default_port;
+    Backend *b = backend_from_proto(default_protocol);
+    default_port = 0; /* illegal */
+    if (b)
+        default_port = b->default_port;
     }
     ret = pt_main(argc, argv);
     cleanup_exit(ret);

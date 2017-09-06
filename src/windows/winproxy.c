@@ -17,9 +17,9 @@ Socket make_handle_socket(HANDLE send_H, HANDLE recv_H, Plug plug,
                           int overlapped);
 
 Socket platform_new_connection(SockAddr addr, char *hostname,
-			       int port, int privport,
-			       int oobinline, int nodelay, int keepalive,
-			       Plug plug, Conf *conf)
+                   int port, int privport,
+                   int oobinline, int nodelay, int keepalive,
+                   Plug plug, Conf *conf)
 {
     char *cmd;
     HANDLE us_to_cmd, us_from_cmd, cmd_to_us, cmd_from_us;
@@ -28,7 +28,7 @@ Socket platform_new_connection(SockAddr addr, char *hostname,
     PROCESS_INFORMATION pi;
 
     if (conf_get_int(conf, CONF_proxy_type) != PROXY_CMD)
-	return NULL;
+    return NULL;
 
     cmd = format_telnet_command(addr, port, conf);
 
@@ -36,11 +36,11 @@ Socket platform_new_connection(SockAddr addr, char *hostname,
     sk_addr_free(addr);
 
     {
-	char *msg = dupprintf("Starting local proxy command: %s", cmd);
-	/* We're allowed to pass NULL here, because we're part of the Windows
-	 * front end so we know logevent doesn't expect any data. */
-	logevent(NULL, msg);
-	sfree(msg);
+    char *msg = dupprintf("Starting local proxy command: %s", cmd);
+    /* We're allowed to pass NULL here, because we're part of the Windows
+     * front end so we know logevent doesn't expect any data. */
+    logevent(NULL, msg);
+    sfree(msg);
     }
 
     /*
@@ -51,19 +51,19 @@ Socket platform_new_connection(SockAddr addr, char *hostname,
     sa.lpSecurityDescriptor = NULL;    /* default */
     sa.bInheritHandle = TRUE;
     if (!CreatePipe(&us_from_cmd, &cmd_to_us, &sa, 0)) {
-	Socket ret =
+    Socket ret =
             new_error_socket("Unable to create pipes for proxy command", plug);
         sfree(cmd);
-	return ret;
+    return ret;
     }
 
     if (!CreatePipe(&cmd_from_us, &us_to_cmd, &sa, 0)) {
-	Socket ret =
+    Socket ret =
             new_error_socket("Unable to create pipes for proxy command", plug);
         sfree(cmd);
-	CloseHandle(us_from_cmd);
-	CloseHandle(cmd_to_us);
-	return ret;
+    CloseHandle(us_from_cmd);
+    CloseHandle(cmd_to_us);
+    return ret;
     }
 
     SetHandleInformation(us_to_cmd, HANDLE_FLAG_INHERIT, 0);
@@ -80,8 +80,8 @@ Socket platform_new_connection(SockAddr addr, char *hostname,
     si.hStdOutput = cmd_to_us;
     si.hStdError = NULL;
     CreateProcess(NULL, cmd, NULL, NULL, TRUE,
-		  CREATE_NO_WINDOW | NORMAL_PRIORITY_CLASS,
-		  NULL, NULL, &si, &pi);
+          CREATE_NO_WINDOW | NORMAL_PRIORITY_CLASS,
+          NULL, NULL, &si, &pi);
     CloseHandle(pi.hProcess);
     CloseHandle(pi.hThread);
 

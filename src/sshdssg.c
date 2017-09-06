@@ -6,7 +6,7 @@
 #include "ssh.h"
 
 int dsa_generate(struct dss_key *key, int bits, progfn_t pfn,
-		 void *pfnparam)
+         void *pfnparam)
 {
     Bignum qm1, power, g, h, tmp;
     unsigned pfirst, qfirst;
@@ -92,13 +92,13 @@ int dsa_generate(struct dss_key *key, int bits, progfn_t pfn,
     h = bignum_from_long(1);
     progress = 0;
     while (1) {
-	pfn(pfnparam, PROGFN_PROGRESS, 3, ++progress);
-	g = modpow(h, power, key->p);
-	if (bignum_cmp(g, One) > 0)
-	    break;		       /* got one */
-	tmp = h;
-	h = bignum_add_long(h, 1);
-	freebn(tmp);
+    pfn(pfnparam, PROGFN_PROGRESS, 3, ++progress);
+    g = modpow(h, power, key->p);
+    if (bignum_cmp(g, One) > 0)
+        break;               /* got one */
+    tmp = h;
+    h = bignum_add_long(h, 1);
+    freebn(tmp);
     }
     key->g = g;
     freebn(h);
@@ -112,30 +112,30 @@ int dsa_generate(struct dss_key *key, int bits, progfn_t pfn,
     decbn(qm1);
     progress = 0;
     while (1) {
-	int i, v, byte, bitsleft;
-	Bignum x;
+    int i, v, byte, bitsleft;
+    Bignum x;
 
-	pfn(pfnparam, PROGFN_PROGRESS, 4, ++progress);
-	x = bn_power_2(159);
-	byte = 0;
-	bitsleft = 0;
+    pfn(pfnparam, PROGFN_PROGRESS, 4, ++progress);
+    x = bn_power_2(159);
+    byte = 0;
+    bitsleft = 0;
 
-	for (i = 0; i < 160; i++) {
-	    if (bitsleft <= 0)
-		bitsleft = 8, byte = random_byte();
-	    v = byte & 1;
-	    byte >>= 1;
-	    bitsleft--;
-	    bignum_set_bit(x, i, v);
-	}
+    for (i = 0; i < 160; i++) {
+        if (bitsleft <= 0)
+        bitsleft = 8, byte = random_byte();
+        v = byte & 1;
+        byte >>= 1;
+        bitsleft--;
+        bignum_set_bit(x, i, v);
+    }
 
-	if (bignum_cmp(x, One) <= 0 || bignum_cmp(x, qm1) >= 0) {
-	    freebn(x);
-	    continue;
-	} else {
-	    key->x = x;
-	    break;
-	}
+    if (bignum_cmp(x, One) <= 0 || bignum_cmp(x, qm1) >= 0) {
+        freebn(x);
+        continue;
+    } else {
+        key->x = x;
+        break;
+    }
     }
     freebn(qm1);
 

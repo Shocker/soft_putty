@@ -10,7 +10,7 @@
 /*
  * Exports from gtkfont.c.
  */
-struct unifont_vtable;		       /* contents internal to gtkfont.c */
+struct unifont_vtable;               /* contents internal to gtkfont.c */
 typedef struct unifont {
     const struct unifont_vtable *vt;
     /*
@@ -39,12 +39,12 @@ typedef struct unifont {
 } unifont;
 
 unifont *unifont_create(GtkWidget *widget, const char *name,
-			int wide, int bold,
-			int shadowoffset, int shadowalways);
+            int wide, int bold,
+            int shadowoffset, int shadowalways);
 void unifont_destroy(unifont *font);
 void unifont_draw_text(GdkDrawable *target, GdkGC *gc, unifont *font,
-		       int x, int y, const wchar_t *string, int len,
-		       int wide, int bold, int cellwidth);
+               int x, int y, const wchar_t *string, int len,
+               int wide, int bold, int cellwidth);
 
 /*
  * This function behaves exactly like the low-level unifont_create,
@@ -68,7 +68,7 @@ unifont *multifont_create(GtkWidget *widget, const char *name,
  * the implementation.)
  */
 typedef struct unifontsel {
-    void *user_data;		       /* settable by the user */
+    void *user_data;               /* settable by the user */
     GtkWindow *window;
     GtkWidget *ok_button, *cancel_button;
 } unifontsel;

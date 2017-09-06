@@ -33,9 +33,9 @@
 #include "putty.h"
 
 static const char *null_init(void *, void **, Conf *, char *, int, char **,
-			     int, int);
+                 int, int);
 static const char *loop_init(void *, void **, Conf *, char *, int, char **,
-			     int, int);
+                 int, int);
 static void null_free(void *);
 static void loop_free(void *);
 static void null_reconfig(void *, Conf *);
@@ -73,15 +73,15 @@ struct loop_state {
 };
 
 static const char *null_init(void *frontend_handle, void **backend_handle,
-			     Conf *conf, char *host, int port,
-			     char **realhost, int nodelay, int keepalive) {
+                 Conf *conf, char *host, int port,
+                 char **realhost, int nodelay, int keepalive) {
 
     return NULL;
 }
 
 static const char *loop_init(void *frontend_handle, void **backend_handle,
-			     Conf *conf, char *host, int port,
-			     char **realhost, int nodelay, int keepalive) {
+                 Conf *conf, char *host, int port,
+                 char **realhost, int nodelay, int keepalive) {
     struct loop_state *st = snew(struct loop_state);
 
     st->term = frontend_handle;

@@ -49,10 +49,10 @@ static int handle_gotdata(struct handle *h, void *data, int len)
     Handle_Socket ps = (Handle_Socket) handle_get_privdata(h);
 
     if (len < 0) {
-	return plug_closing(ps->plug, "Read error from handle",
-			    0, 0);
+    return plug_closing(ps->plug, "Read error from handle",
+                0, 0);
     } else if (len == 0) {
-	return plug_closing(ps->plug, NULL, 0, 0);
+    return plug_closing(ps->plug, NULL, 0, 0);
     } else {
         assert(ps->frozen != FREEZING && ps->frozen != THAWING);
         if (ps->frozen == FREEZING) {
@@ -87,7 +87,7 @@ static Plug sk_handle_plug(Socket s, Plug p)
     Handle_Socket ps = (Handle_Socket) s;
     Plug ret = ps->plug;
     if (p)
-	ps->plug = p;
+    ps->plug = p;
     return ret;
 }
 
@@ -263,14 +263,14 @@ Socket make_handle_socket(HANDLE send_H, HANDLE recv_H, Plug plug,
                           int overlapped)
 {
     static const struct socket_function_table socket_fn_table = {
-	sk_handle_plug,
-	sk_handle_close,
-	sk_handle_write,
-	sk_handle_write_oob,
-	sk_handle_write_eof,
-	sk_handle_flush,
-	sk_handle_set_frozen,
-	sk_handle_socket_error,
+    sk_handle_plug,
+    sk_handle_close,
+    sk_handle_write,
+    sk_handle_write_oob,
+    sk_handle_write_eof,
+    sk_handle_flush,
+    sk_handle_set_frozen,
+    sk_handle_socket_error,
         sk_handle_peer_info,
     };
 

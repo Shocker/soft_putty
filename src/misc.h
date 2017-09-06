@@ -7,8 +7,8 @@
 
 #include "puttymem.h"
 
-#include <stdio.h>		       /* for FILE * */
-#include <stdarg.h>		       /* for va_list */
+#include <stdio.h>               /* for FILE * */
+#include <stdarg.h>               /* for va_list */
 #include <time.h>                      /* for struct tm */
 
 #ifndef FALSE
@@ -60,7 +60,7 @@ int base64_decode_atom(char *atom, unsigned char *out);
 struct bufchain_granule;
 typedef struct bufchain_tag {
     struct bufchain_granule *head, *tail;
-    int buffersize;		       /* current amount of buffered data */
+    int buffersize;               /* current amount of buffered data */
 } bufchain;
 
 void bufchain_init(bufchain *ch);

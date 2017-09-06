@@ -80,14 +80,14 @@ void enum_settings_finish(void *handle);
  * or 2 (entry exists in database and is different).
  */
 int verify_host_key(const char *hostname, int port,
-		    const char *keytype, const char *key);
+            const char *keytype, const char *key);
 
 /*
  * Write a host key into the database, overwriting any previous
  * entry that might have been there.
  */
 void store_host_key(const char *hostname, int port,
-		    const char *keytype, const char *key);
+            const char *keytype, const char *key);
 
 /* ----------------------------------------------------------------------
  * Functions to access PuTTY's random number seed file.

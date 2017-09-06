@@ -192,10 +192,10 @@ const char *charset_to_mimeenc(int charset)
     int i;
 
     for (i = 0; i < (int)lenof(mimeencs); i++)
-	if (charset == mimeencs[i].charset)
-	    return mimeencs[i].name;
+    if (charset == mimeencs[i].charset)
+        return mimeencs[i].name;
 
-    return NULL;		       /* not found */
+    return NULL;               /* not found */
 }
 
 int charset_from_mimeenc(const char *name)
@@ -203,17 +203,17 @@ int charset_from_mimeenc(const char *name)
     int i;
 
     for (i = 0; i < (int)lenof(mimeencs); i++) {
-	const char *p, *q;
-	p = name;
-	q = mimeencs[i].name;
-	while (*p || *q) {
-		if (tolower((unsigned char)*p) != tolower((unsigned char)*q))
-		break;
-	    p++; q++;
-	}
-	if (!*p && !*q)
-	    return mimeencs[i].charset;
+    const char *p, *q;
+    p = name;
+    q = mimeencs[i].name;
+    while (*p || *q) {
+        if (tolower((unsigned char)*p) != tolower((unsigned char)*q))
+        break;
+        p++; q++;
+    }
+    if (!*p && !*q)
+        return mimeencs[i].charset;
     }
 
-    return CS_NONE;		       /* not found */
+    return CS_NONE;               /* not found */
 }

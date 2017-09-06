@@ -18,7 +18,7 @@
 #include <sys/select.h>
 #endif
 
-#define PUTTY_DO_GLOBALS	       /* actually _define_ globals */
+#define PUTTY_DO_GLOBALS           /* actually _define_ globals */
 #include "putty.h"
 #include "storage.h"
 #include "tree234.h"
@@ -118,9 +118,9 @@ static Conf *conf;
 char *platform_default_s(const char *name)
 {
     if (!strcmp(name, "TermType"))
-	return dupstr(getenv("TERM"));
+    return dupstr(getenv("TERM"));
     if (!strcmp(name, "SerialLine"))
-	return dupstr("/dev/ttyS0");
+    return dupstr("/dev/ttyS0");
     return NULL;
 }
 
@@ -137,14 +137,14 @@ FontSpec *platform_default_fontspec(const char *name)
 Filename *platform_default_filename(const char *name)
 {
     if (!strcmp(name, "LogFileName"))
-	return filename_from_str("putty.log");
+    return filename_from_str("putty.log");
     else
-	return filename_from_str("");
+    return filename_from_str("");
 }
 
 char *x_get_default(const char *key)
 {
-    return NULL;		       /* this is a stub */
+    return NULL;               /* this is a stub */
 }
 int term_ldisc(Terminal *term, int mode)
 {
@@ -160,26 +160,26 @@ void ldisc_update(void *frontend, int echo, int edit)
     mode = orig_termios;
 
     if (echo)
-	mode.c_lflag |= ECHO;
+    mode.c_lflag |= ECHO;
     else
-	mode.c_lflag &= ~ECHO;
+    mode.c_lflag &= ~ECHO;
 
     if (edit) {
-	mode.c_iflag |= ICRNL;
-	mode.c_lflag |= ISIG | ICANON;
-	mode.c_oflag |= OPOST;
+    mode.c_iflag |= ICRNL;
+    mode.c_lflag |= ISIG | ICANON;
+    mode.c_oflag |= OPOST;
     } else {
-	mode.c_iflag &= ~ICRNL;
-	mode.c_lflag &= ~(ISIG | ICANON);
-	mode.c_oflag &= ~OPOST;
-	/* Solaris sets these to unhelpful values */
-	mode.c_cc[VMIN] = 1;
-	mode.c_cc[VTIME] = 0;
-	/* FIXME: perhaps what we do with IXON/IXOFF should be an
-	 * argument to ldisc_update(), to allow implementation of SSH-2
-	 * "xon-xoff" and Rlogin's equivalent? */
-	mode.c_iflag &= ~IXON;
-	mode.c_iflag &= ~IXOFF;
+    mode.c_iflag &= ~ICRNL;
+    mode.c_lflag &= ~(ISIG | ICANON);
+    mode.c_oflag &= ~OPOST;
+    /* Solaris sets these to unhelpful values */
+    mode.c_cc[VMIN] = 1;
+    mode.c_cc[VTIME] = 0;
+    /* FIXME: perhaps what we do with IXON/IXOFF should be an
+     * argument to ldisc_update(), to allow implementation of SSH-2
+     * "xon-xoff" and Rlogin's equivalent? */
+    mode.c_iflag &= ~IXON;
+    mode.c_iflag &= ~IXOFF;
     }
     /* 
      * Mark parity errors and (more important) BREAK on input.  This
@@ -202,7 +202,7 @@ static char *get_ttychar(struct termios *t, int index)
     cc_t c = t->c_cc[index];
 #if defined(_POSIX_VDISABLE)
     if (c == _POSIX_VDISABLE)
-	return dupstr("");
+    return dupstr("");
 #endif
     return dupprintf("^<%d>", c);
 }
@@ -217,16 +217,16 @@ char *get_ttymode(void *frontend, const char *mode)
 
 #define GET_CHAR(ourname, uxname) \
     do { \
-	if (strcmp(mode, ourname) == 0) \
-	    return get_ttychar(&orig_termios, uxname); \
+    if (strcmp(mode, ourname) == 0) \
+        return get_ttychar(&orig_termios, uxname); \
     } while(0)
 #define GET_BOOL(ourname, uxname, uxmemb, transform) \
     do { \
-	if (strcmp(mode, ourname) == 0) { \
-	    int b = (orig_termios.uxmemb & uxname) != 0; \
-	    transform; \
-	    return dupprintf("%d", b); \
-	} \
+    if (strcmp(mode, ourname) == 0) { \
+        int b = (orig_termios.uxmemb & uxname) != 0; \
+        transform; \
+        return dupprintf("%d", b); \
+    } \
     } while (0)
 
     /*
@@ -379,7 +379,7 @@ char *get_ttymode(void *frontend, const char *mode)
 void cleanup_termios(void)
 {
     if (local_tty)
-	tcsetattr(STDIN_FILENO, TCSANOW, &orig_termios);
+    tcsetattr(STDIN_FILENO, TCSANOW, &orig_termios);
 }
 
 bufchain stdout_data, stderr_data;
@@ -415,15 +415,15 @@ int try_output(int is_stderr)
 }
 
 int from_backend(void *frontend_handle, int is_stderr,
-		 const char *data, int len)
+         const char *data, int len)
 {
     if (is_stderr) {
-	bufchain_add(&stderr_data, data, len);
-	return try_output(TRUE);
+    bufchain_add(&stderr_data, data, len);
+    return try_output(TRUE);
     } else {
         assert(outgoingeof == EOF_NO);
-	bufchain_add(&stdout_data, data, len);
-	return try_output(FALSE);
+    bufchain_add(&stdout_data, data, len);
+    return try_output(FALSE);
     }
 }
 
@@ -450,7 +450,7 @@ int get_userpass_input(prompts_t *p, unsigned char *in, int inlen)
     int ret;
     ret = cmdline_get_passwd_input(p, in, inlen);
     if (ret == -1)
-	ret = console_get_userpass_input(p, in, inlen);
+    ret = console_get_userpass_input(p, in, inlen);
     return ret;
 }
 
@@ -464,59 +464,59 @@ static void from_tty(void *vbuf, unsigned len)
 
     p = buf; end = buf + len;
     while (p < end) {
-	switch (state) {
-	    case NORMAL:
-		if (*p == '\xff') {
-		    p++;
-		    state = FF;
-		} else {
-		    q = memchr(p, '\xff', end - p);
-		    if (q == NULL) q = end;
-		    back->send(backhandle, p, q - p);
-		    p = q;
-		}
-		break;
-	    case FF:
-		if (*p == '\xff') {
-		    back->send(backhandle, p, 1);
-		    p++;
-		    state = NORMAL;
-		} else if (*p == '\0') {
-		    p++;
-		    state = FF00;
-		} else abort();
-		break;
-	    case FF00:
-		if (*p == '\0') {
-		    back->special(backhandle, TS_BRK);
-		} else {
-		    /* 
-		     * Pretend that PARMRK wasn't set.  This involves
-		     * faking what INPCK and IGNPAR would have done if
-		     * we hadn't overridden them.  Unfortunately, we
-		     * can't do this entirely correctly because INPCK
-		     * distinguishes between framing and parity
-		     * errors, but PARMRK format represents both in
-		     * the same way.  We assume that parity errors are
-		     * more common than framing errors, and hence
-		     * treat all input errors as being subject to
-		     * INPCK.
-		     */
-		    if (orig_termios.c_iflag & INPCK) {
-			/* If IGNPAR is set, we throw away the character. */
-			if (!(orig_termios.c_iflag & IGNPAR)) {
-			    /* PE/FE get passed on as NUL. */
-			    *p = 0;
-			    back->send(backhandle, p, 1);
-			}
-		    } else {
-			/* INPCK not set.  Assume we got a parity error. */
-			back->send(backhandle, p, 1);
-		    }
-		}
-		p++;
-		state = NORMAL;
-	}
+    switch (state) {
+        case NORMAL:
+        if (*p == '\xff') {
+            p++;
+            state = FF;
+        } else {
+            q = memchr(p, '\xff', end - p);
+            if (q == NULL) q = end;
+            back->send(backhandle, p, q - p);
+            p = q;
+        }
+        break;
+        case FF:
+        if (*p == '\xff') {
+            back->send(backhandle, p, 1);
+            p++;
+            state = NORMAL;
+        } else if (*p == '\0') {
+            p++;
+            state = FF00;
+        } else abort();
+        break;
+        case FF00:
+        if (*p == '\0') {
+            back->special(backhandle, TS_BRK);
+        } else {
+            /* 
+             * Pretend that PARMRK wasn't set.  This involves
+             * faking what INPCK and IGNPAR would have done if
+             * we hadn't overridden them.  Unfortunately, we
+             * can't do this entirely correctly because INPCK
+             * distinguishes between framing and parity
+             * errors, but PARMRK format represents both in
+             * the same way.  We assume that parity errors are
+             * more common than framing errors, and hence
+             * treat all input errors as being subject to
+             * INPCK.
+             */
+            if (orig_termios.c_iflag & INPCK) {
+            /* If IGNPAR is set, we throw away the character. */
+            if (!(orig_termios.c_iflag & IGNPAR)) {
+                /* PE/FE get passed on as NUL. */
+                *p = 0;
+                back->send(backhandle, p, 1);
+            }
+            } else {
+            /* INPCK not set.  Assume we got a parity error. */
+            back->send(backhandle, p, 1);
+            }
+        }
+        p++;
+        state = NORMAL;
+    }
     }
 }
 
@@ -525,7 +525,7 @@ int signalpipe[2];
 void sigwinch(int signum)
 {
     if (write(signalpipe[1], "x", 1) <= 0)
-	/* not much we can do about it */;
+    /* not much we can do about it */;
 }
 
 /*
@@ -638,213 +638,213 @@ int main(int argc, char **argv)
     default_port = conf_get_int(conf, CONF_port);
     errors = 0;
     {
-	/*
-	 * Override the default protocol if PLINK_PROTOCOL is set.
-	 */
-	char *p = getenv("PLINK_PROTOCOL");
-	if (p) {
-	    const Backend *b = backend_from_name(p);
-	    if (b) {
-		default_protocol = b->protocol;
-		default_port = b->default_port;
-		conf_set_int(conf, CONF_protocol, default_protocol);
-		conf_set_int(conf, CONF_port, default_port);
-	    }
-	}
+    /*
+     * Override the default protocol if PLINK_PROTOCOL is set.
+     */
+    char *p = getenv("PLINK_PROTOCOL");
+    if (p) {
+        const Backend *b = backend_from_name(p);
+        if (b) {
+        default_protocol = b->protocol;
+        default_port = b->default_port;
+        conf_set_int(conf, CONF_protocol, default_protocol);
+        conf_set_int(conf, CONF_port, default_port);
+        }
+    }
     }
     while (--argc) {
-	char *p = *++argv;
-	if (*p == '-') {
-	    int ret = cmdline_process_param(p, (argc > 1 ? argv[1] : NULL),
-					    1, conf);
-	    if (ret == -2) {
-		fprintf(stderr,
-			"plink: option \"%s\" requires an argument\n", p);
-		errors = 1;
-	    } else if (ret == 2) {
-		--argc, ++argv;
-	    } else if (ret == 1) {
-		continue;
-	    } else if (!strcmp(p, "-batch")) {
-		console_batch_mode = 1;
-	    } else if (!strcmp(p, "-s")) {
+    char *p = *++argv;
+    if (*p == '-') {
+        int ret = cmdline_process_param(p, (argc > 1 ? argv[1] : NULL),
+                        1, conf);
+        if (ret == -2) {
+        fprintf(stderr,
+            "plink: option \"%s\" requires an argument\n", p);
+        errors = 1;
+        } else if (ret == 2) {
+        --argc, ++argv;
+        } else if (ret == 1) {
+        continue;
+        } else if (!strcmp(p, "-batch")) {
+        console_batch_mode = 1;
+        } else if (!strcmp(p, "-s")) {
                 /* Save status to write to conf later. */
-		use_subsystem = 1;
-	    } else if (!strcmp(p, "-V") || !strcmp(p, "--version")) {
+        use_subsystem = 1;
+        } else if (!strcmp(p, "-V") || !strcmp(p, "--version")) {
                 version();
-	    } else if (!strcmp(p, "--help")) {
+        } else if (!strcmp(p, "--help")) {
                 usage();
                 exit(0);
             } else if (!strcmp(p, "-pgpfp")) {
                 pgp_fingerprints();
                 exit(1);
-	    } else if (!strcmp(p, "-o")) {
+        } else if (!strcmp(p, "-o")) {
                 if (argc <= 1) {
                     fprintf(stderr,
                             "plink: option \"-o\" requires an argument\n");
-		    errors = 1;
-		} else {
+            errors = 1;
+        } else {
                     --argc;
-		    provide_xrm_string(*++argv);
-		}
-	    } else {
-		fprintf(stderr, "plink: unknown option \"%s\"\n", p);
-		errors = 1;
-	    }
-	} else if (*p) {
-	    if (!conf_launchable(conf) || !(got_host || loaded_session)) {
-		char *q = p;
+            provide_xrm_string(*++argv);
+        }
+        } else {
+        fprintf(stderr, "plink: unknown option \"%s\"\n", p);
+        errors = 1;
+        }
+    } else if (*p) {
+        if (!conf_launchable(conf) || !(got_host || loaded_session)) {
+        char *q = p;
 
-		/*
-		 * If the hostname starts with "telnet:", set the
-		 * protocol to Telnet and process the string as a
-		 * Telnet URL.
-		 */
-		if (!strncmp(q, "telnet:", 7)) {
-		    char c;
+        /*
+         * If the hostname starts with "telnet:", set the
+         * protocol to Telnet and process the string as a
+         * Telnet URL.
+         */
+        if (!strncmp(q, "telnet:", 7)) {
+            char c;
 
-		    q += 7;
-		    if (q[0] == '/' && q[1] == '/')
-			q += 2;
-		    conf_set_int(conf, CONF_protocol, PROT_TELNET);
-		    p = q;
+            q += 7;
+            if (q[0] == '/' && q[1] == '/')
+            q += 2;
+            conf_set_int(conf, CONF_protocol, PROT_TELNET);
+            p = q;
                     p += host_strcspn(p, ":/");
-		    c = *p;
-		    if (*p)
-			*p++ = '\0';
-		    if (c == ':')
-			conf_set_int(conf, CONF_port, atoi(p));
-		    else
-			conf_set_int(conf, CONF_port, -1);
-		    conf_set_str(conf, CONF_host, q);
-		    got_host = TRUE;
-		} else {
-		    char *r, *user, *host;
-		    /*
-		     * Before we process the [user@]host string, we
-		     * first check for the presence of a protocol
-		     * prefix (a protocol name followed by ",").
-		     */
-		    r = strchr(p, ',');
-		    if (r) {
-			const Backend *b;
-			*r = '\0';
-			b = backend_from_name(p);
-			if (b) {
-			    default_protocol = b->protocol;
-			    conf_set_int(conf, CONF_protocol,
-					 default_protocol);
-			    portnumber = b->default_port;
-			}
-			p = r + 1;
-		    }
+            c = *p;
+            if (*p)
+            *p++ = '\0';
+            if (c == ':')
+            conf_set_int(conf, CONF_port, atoi(p));
+            else
+            conf_set_int(conf, CONF_port, -1);
+            conf_set_str(conf, CONF_host, q);
+            got_host = TRUE;
+        } else {
+            char *r, *user, *host;
+            /*
+             * Before we process the [user@]host string, we
+             * first check for the presence of a protocol
+             * prefix (a protocol name followed by ",").
+             */
+            r = strchr(p, ',');
+            if (r) {
+            const Backend *b;
+            *r = '\0';
+            b = backend_from_name(p);
+            if (b) {
+                default_protocol = b->protocol;
+                conf_set_int(conf, CONF_protocol,
+                     default_protocol);
+                portnumber = b->default_port;
+            }
+            p = r + 1;
+            }
 
-		    /*
-		     * A nonzero length string followed by an @ is treated
-		     * as a username. (We discount an _initial_ @.) The
-		     * rest of the string (or the whole string if no @)
-		     * is treated as a session name and/or hostname.
-		     */
-		    r = strrchr(p, '@');
-		    if (r == p)
-			p++, r = NULL; /* discount initial @ */
-		    if (r) {
-			*r++ = '\0';
-			user = p, host = r;
-		    } else {
-			user = NULL, host = p;
-		    }
+            /*
+             * A nonzero length string followed by an @ is treated
+             * as a username. (We discount an _initial_ @.) The
+             * rest of the string (or the whole string if no @)
+             * is treated as a session name and/or hostname.
+             */
+            r = strrchr(p, '@');
+            if (r == p)
+            p++, r = NULL; /* discount initial @ */
+            if (r) {
+            *r++ = '\0';
+            user = p, host = r;
+            } else {
+            user = NULL, host = p;
+            }
 
-		    /*
-		     * Now attempt to load a saved session with the
-		     * same name as the hostname.
-		     */
-		    {
-			Conf *conf2 = conf_new();
-			do_defaults(host, conf2);
-			if (loaded_session || !conf_launchable(conf2)) {
-			    /* No settings for this host; use defaults */
-			    /* (or session was already loaded with -load) */
-			    conf_set_str(conf, CONF_host, host);
-			    conf_set_int(conf, CONF_port, default_port);
-			    got_host = TRUE;
-			} else {
-			    conf_copy_into(conf, conf2);
-			    loaded_session = TRUE;
-			}
-			conf_free(conf2);
-		    }
+            /*
+             * Now attempt to load a saved session with the
+             * same name as the hostname.
+             */
+            {
+            Conf *conf2 = conf_new();
+            do_defaults(host, conf2);
+            if (loaded_session || !conf_launchable(conf2)) {
+                /* No settings for this host; use defaults */
+                /* (or session was already loaded with -load) */
+                conf_set_str(conf, CONF_host, host);
+                conf_set_int(conf, CONF_port, default_port);
+                got_host = TRUE;
+            } else {
+                conf_copy_into(conf, conf2);
+                loaded_session = TRUE;
+            }
+            conf_free(conf2);
+            }
 
-		    if (user) {
-			/* Patch in specified username. */
-			conf_set_str(conf, CONF_username, user);
-		    }
+            if (user) {
+            /* Patch in specified username. */
+            conf_set_str(conf, CONF_username, user);
+            }
 
-		}
-	    } else {
-		char *command;
-		int cmdlen, cmdsize;
-		cmdlen = cmdsize = 0;
-		command = NULL;
+        }
+        } else {
+        char *command;
+        int cmdlen, cmdsize;
+        cmdlen = cmdsize = 0;
+        command = NULL;
 
-		while (argc) {
-		    while (*p) {
-			if (cmdlen >= cmdsize) {
-			    cmdsize = cmdlen + 512;
-			    command = sresize(command, cmdsize, char);
-			}
-			command[cmdlen++]=*p++;
-		    }
-		    if (cmdlen >= cmdsize) {
-			cmdsize = cmdlen + 512;
-			command = sresize(command, cmdsize, char);
-		    }
-		    command[cmdlen++]=' '; /* always add trailing space */
-		    if (--argc) p = *++argv;
-		}
-		if (cmdlen) command[--cmdlen]='\0';
-				       /* change trailing blank to NUL */
-		conf_set_str(conf, CONF_remote_cmd, command);
-		conf_set_str(conf, CONF_remote_cmd2, "");
-		conf_set_int(conf, CONF_nopty, TRUE);  /* command => no tty */
+        while (argc) {
+            while (*p) {
+            if (cmdlen >= cmdsize) {
+                cmdsize = cmdlen + 512;
+                command = sresize(command, cmdsize, char);
+            }
+            command[cmdlen++]=*p++;
+            }
+            if (cmdlen >= cmdsize) {
+            cmdsize = cmdlen + 512;
+            command = sresize(command, cmdsize, char);
+            }
+            command[cmdlen++]=' '; /* always add trailing space */
+            if (--argc) p = *++argv;
+        }
+        if (cmdlen) command[--cmdlen]='\0';
+                       /* change trailing blank to NUL */
+        conf_set_str(conf, CONF_remote_cmd, command);
+        conf_set_str(conf, CONF_remote_cmd2, "");
+        conf_set_int(conf, CONF_nopty, TRUE);  /* command => no tty */
 
-		break;		       /* done with cmdline */
-	    }
-	}
+        break;               /* done with cmdline */
+        }
+    }
     }
 
     if (errors)
-	return 1;
+    return 1;
 
     if (!conf_launchable(conf) || !(got_host || loaded_session)) {
-	usage();
+    usage();
     }
 
     /*
      * Muck about with the hostname in various ways.
      */
     {
-	char *hostbuf = dupstr(conf_get_str(conf, CONF_host));
-	char *host = hostbuf;
-	char *p, *q;
+    char *hostbuf = dupstr(conf_get_str(conf, CONF_host));
+    char *host = hostbuf;
+    char *p, *q;
 
-	/*
-	 * Trim leading whitespace.
-	 */
-	host += strspn(host, " \t");
+    /*
+     * Trim leading whitespace.
+     */
+    host += strspn(host, " \t");
 
-	/*
-	 * See if host is of the form user@host, and separate out
-	 * the username if so.
-	 */
-	if (host[0] != '\0') {
-	    char *atsign = strrchr(host, '@');
-	    if (atsign) {
-		*atsign = '\0';
-		conf_set_str(conf, CONF_username, host);
-		host = atsign + 1;
-	    }
-	}
+    /*
+     * See if host is of the form user@host, and separate out
+     * the username if so.
+     */
+    if (host[0] != '\0') {
+        char *atsign = strrchr(host, '@');
+        if (atsign) {
+        *atsign = '\0';
+        conf_set_str(conf, CONF_username, host);
+        host = atsign + 1;
+        }
+    }
 
         /*
          * Trim a colon suffix off the hostname if it's there. In
@@ -862,20 +862,20 @@ int main(int argc, char **argv)
             }
         }
 
-	/*
-	 * Remove any remaining whitespace.
-	 */
-	p = hostbuf;
-	q = host;
-	while (*q) {
-	    if (*q != ' ' && *q != '\t')
-		*p++ = *q;
-	    q++;
-	}
-	*p = '\0';
+    /*
+     * Remove any remaining whitespace.
+     */
+    p = hostbuf;
+    q = host;
+    while (*q) {
+        if (*q != ' ' && *q != '\t')
+        *p++ = *q;
+        q++;
+    }
+    *p = '\0';
 
-	conf_set_str(conf, CONF_host, hostbuf);
-	sfree(hostbuf);
+    conf_set_str(conf, CONF_host, hostbuf);
+    sfree(hostbuf);
     }
 
     /*
@@ -888,11 +888,11 @@ int main(int argc, char **argv)
      * one, as 'ssh' does.
      */
     if (conf_get_str(conf, CONF_username)[0] == '\0') {
-	char *user = get_username();
-	if (user) {
-	    conf_set_str(conf, CONF_username, user);
-	    sfree(user);
-	}
+    char *user = get_username();
+    if (user) {
+        conf_set_str(conf, CONF_username, user);
+        sfree(user);
+    }
     }
 
     /*
@@ -902,9 +902,9 @@ int main(int argc, char **argv)
         conf_set_int(conf, CONF_ssh_subsys, TRUE);
 
     if (!*conf_get_str(conf, CONF_remote_cmd) &&
-	!*conf_get_str(conf, CONF_remote_cmd2) &&
-	!*conf_get_str(conf, CONF_ssh_nc_host))
-	flags |= FLAG_INTERACTIVE;
+    !*conf_get_str(conf, CONF_remote_cmd2) &&
+    !*conf_get_str(conf, CONF_ssh_nc_host))
+    flags |= FLAG_INTERACTIVE;
 
     /*
      * Select protocol. This is farmed out into a table in a
@@ -912,16 +912,16 @@ int main(int argc, char **argv)
      */
     back = backend_from_proto(conf_get_int(conf, CONF_protocol));
     if (back == NULL) {
-	fprintf(stderr,
-		"Internal fault: Unsupported protocol found\n");
-	return 1;
+    fprintf(stderr,
+        "Internal fault: Unsupported protocol found\n");
+    return 1;
     }
 
     /*
      * Select port.
      */
     if (portnumber != -1)
-	conf_set_int(conf, CONF_port, portnumber);
+    conf_set_int(conf, CONF_port, portnumber);
 
     /*
      * Block SIGPIPE, so that we'll get EPIPE individually on
@@ -933,8 +933,8 @@ int main(int argc, char **argv)
      * Set up the pipe we'll use to tell us about SIGWINCH.
      */
     if (pipe(signalpipe) < 0) {
-	perror("pipe");
-	exit(1);
+    perror("pipe");
+    exit(1);
     }
     putty_signal(SIGWINCH, sigwinch);
 
@@ -943,8 +943,8 @@ int main(int argc, char **argv)
      * out the initial terminal size.
      */
     if (ioctl(STDIN_FILENO, TIOCGWINSZ, &size) >= 0) {
-	conf_set_int(conf, CONF_width, size.ws_col);
-	conf_set_int(conf, CONF_height, size.ws_row);
+    conf_set_int(conf, CONF_width, size.ws_col);
+    conf_set_int(conf, CONF_height, size.ws_row);
     }
 
     sk_init();
@@ -956,10 +956,10 @@ int main(int argc, char **argv)
      * the "simple" flag.
      */
     if (conf_get_int(conf, CONF_protocol) == PROT_SSH &&
-	!conf_get_int(conf, CONF_x11_forward) &&
-	!conf_get_int(conf, CONF_agentfwd) &&
-	!conf_get_str_nthstrkey(conf, CONF_portfwd, 0))
-	conf_set_int(conf, CONF_ssh_simple, TRUE);
+    !conf_get_int(conf, CONF_x11_forward) &&
+    !conf_get_int(conf, CONF_agentfwd) &&
+    !conf_get_str_nthstrkey(conf, CONF_portfwd, 0))
+    conf_set_int(conf, CONF_ssh_simple, TRUE);
 
     /*
      * Start up the connection.
@@ -967,23 +967,23 @@ int main(int argc, char **argv)
     logctx = log_init(NULL, conf);
     console_provide_logctx(logctx);
     {
-	const char *error;
-	char *realhost;
-	/* nodelay is only useful if stdin is a terminal device */
-	int nodelay = conf_get_int(conf, CONF_tcp_nodelay) && isatty(0);
+    const char *error;
+    char *realhost;
+    /* nodelay is only useful if stdin is a terminal device */
+    int nodelay = conf_get_int(conf, CONF_tcp_nodelay) && isatty(0);
 
-	error = back->init(NULL, &backhandle, conf,
-			   conf_get_str(conf, CONF_host),
-			   conf_get_int(conf, CONF_port),
-			   &realhost, nodelay,
-			   conf_get_int(conf, CONF_tcp_keepalives));
-	if (error) {
-	    fprintf(stderr, "Unable to open connection:\n%s\n", error);
-	    return 1;
-	}
-	back->provide_logctx(backhandle, logctx);
-	ldisc_create(conf, NULL, back, backhandle, NULL);
-	sfree(realhost);
+    error = back->init(NULL, &backhandle, conf,
+               conf_get_str(conf, CONF_host),
+               conf_get_int(conf, CONF_port),
+               &realhost, nodelay,
+               conf_get_int(conf, CONF_tcp_keepalives));
+    if (error) {
+        fprintf(stderr, "Unable to open connection:\n%s\n", error);
+        return 1;
+    }
+    back->provide_logctx(backhandle, logctx);
+    ldisc_create(conf, NULL, back, backhandle, NULL);
+    sfree(realhost);
     }
     connopen = 1;
 
@@ -999,63 +999,63 @@ int main(int argc, char **argv)
     now = GETTICKCOUNT();
 
     while (1) {
-	fd_set rset, wset, xset;
-	int maxfd;
-	int rwx;
-	int ret;
+    fd_set rset, wset, xset;
+    int maxfd;
+    int rwx;
+    int ret;
         unsigned long next;
 
-	FD_ZERO(&rset);
-	FD_ZERO(&wset);
-	FD_ZERO(&xset);
-	maxfd = 0;
+    FD_ZERO(&rset);
+    FD_ZERO(&wset);
+    FD_ZERO(&xset);
+    maxfd = 0;
 
-	FD_SET_MAX(signalpipe[0], maxfd, rset);
+    FD_SET_MAX(signalpipe[0], maxfd, rset);
 
-	if (connopen && !sending &&
-	    back->connected(backhandle) &&
-	    back->sendok(backhandle) &&
-	    back->sendbuffer(backhandle) < MAX_STDIN_BACKLOG) {
-	    /* If we're OK to send, then try to read from stdin. */
-	    FD_SET_MAX(STDIN_FILENO, maxfd, rset);
-	}
+    if (connopen && !sending &&
+        back->connected(backhandle) &&
+        back->sendok(backhandle) &&
+        back->sendbuffer(backhandle) < MAX_STDIN_BACKLOG) {
+        /* If we're OK to send, then try to read from stdin. */
+        FD_SET_MAX(STDIN_FILENO, maxfd, rset);
+    }
 
-	if (bufchain_size(&stdout_data) > 0) {
-	    /* If we have data for stdout, try to write to stdout. */
-	    FD_SET_MAX(STDOUT_FILENO, maxfd, wset);
-	}
+    if (bufchain_size(&stdout_data) > 0) {
+        /* If we have data for stdout, try to write to stdout. */
+        FD_SET_MAX(STDOUT_FILENO, maxfd, wset);
+    }
 
-	if (bufchain_size(&stderr_data) > 0) {
-	    /* If we have data for stderr, try to write to stderr. */
-	    FD_SET_MAX(STDERR_FILENO, maxfd, wset);
-	}
+    if (bufchain_size(&stderr_data) > 0) {
+        /* If we have data for stderr, try to write to stderr. */
+        FD_SET_MAX(STDERR_FILENO, maxfd, wset);
+    }
 
-	/* Count the currently active fds. */
-	i = 0;
-	for (fd = first_fd(&fdstate, &rwx); fd >= 0;
-	     fd = next_fd(&fdstate, &rwx)) i++;
+    /* Count the currently active fds. */
+    i = 0;
+    for (fd = first_fd(&fdstate, &rwx); fd >= 0;
+         fd = next_fd(&fdstate, &rwx)) i++;
 
-	/* Expand the fdlist buffer if necessary. */
-	if (i > fdsize) {
-	    fdsize = i + 16;
-	    fdlist = sresize(fdlist, fdsize, int);
-	}
+    /* Expand the fdlist buffer if necessary. */
+    if (i > fdsize) {
+        fdsize = i + 16;
+        fdlist = sresize(fdlist, fdsize, int);
+    }
 
-	/*
-	 * Add all currently open fds to the select sets, and store
-	 * them in fdlist as well.
-	 */
-	fdcount = 0;
-	for (fd = first_fd(&fdstate, &rwx); fd >= 0;
-	     fd = next_fd(&fdstate, &rwx)) {
-	    fdlist[fdcount++] = fd;
-	    if (rwx & 1)
-		FD_SET_MAX(fd, maxfd, rset);
-	    if (rwx & 2)
-		FD_SET_MAX(fd, maxfd, wset);
-	    if (rwx & 4)
-		FD_SET_MAX(fd, maxfd, xset);
-	}
+    /*
+     * Add all currently open fds to the select sets, and store
+     * them in fdlist as well.
+     */
+    fdcount = 0;
+    for (fd = first_fd(&fdstate, &rwx); fd >= 0;
+         fd = next_fd(&fdstate, &rwx)) {
+        fdlist[fdcount++] = fd;
+        if (rwx & 1)
+        FD_SET_MAX(fd, maxfd, rset);
+        if (rwx & 2)
+        FD_SET_MAX(fd, maxfd, wset);
+        if (rwx & 4)
+        FD_SET_MAX(fd, maxfd, xset);
+    }
 
         if (toplevel_callback_pending()) {
             struct timeval tv;
@@ -1068,14 +1068,14 @@ int main(int argc, char **argv)
                 long ticks;
                 struct timeval tv;
 
-		then = now;
-		now = GETTICKCOUNT();
-		if (now - then > next - then)
-		    ticks = 0;
-		else
-		    ticks = next - now;
-		tv.tv_sec = ticks / 1000;
-		tv.tv_usec = ticks % 1000 * 1000;
+        then = now;
+        now = GETTICKCOUNT();
+        if (now - then > next - then)
+            ticks = 0;
+        else
+            ticks = next - now;
+        tv.tv_sec = ticks / 1000;
+        tv.tv_usec = ticks % 1000 * 1000;
                 ret = select(maxfd, &rset, &wset, &xset, &tv);
                 if (ret == 0)
                     now = next;
@@ -1086,77 +1086,77 @@ int main(int argc, char **argv)
             ret = select(maxfd, &rset, &wset, &xset, NULL);
         }
 
-	if (ret < 0) {
-	    perror("select");
-	    exit(1);
-	}
+    if (ret < 0) {
+        perror("select");
+        exit(1);
+    }
 
-	for (i = 0; i < fdcount; i++) {
-	    fd = fdlist[i];
+    for (i = 0; i < fdcount; i++) {
+        fd = fdlist[i];
             /*
              * We must process exceptional notifications before
              * ordinary readability ones, or we may go straight
              * past the urgent marker.
              */
-	    if (FD_ISSET(fd, &xset))
-		select_result(fd, 4);
-	    if (FD_ISSET(fd, &rset))
-		select_result(fd, 1);
-	    if (FD_ISSET(fd, &wset))
-		select_result(fd, 2);
-	}
+        if (FD_ISSET(fd, &xset))
+        select_result(fd, 4);
+        if (FD_ISSET(fd, &rset))
+        select_result(fd, 1);
+        if (FD_ISSET(fd, &wset))
+        select_result(fd, 2);
+    }
 
-	if (FD_ISSET(signalpipe[0], &rset)) {
-	    char c[1];
-	    struct winsize size;
-	    if (read(signalpipe[0], c, 1) <= 0)
-		/* ignore error */;
-	    /* ignore its value; it'll be `x' */
-	    if (ioctl(STDIN_FILENO, TIOCGWINSZ, (void *)&size) >= 0)
-		back->size(backhandle, size.ws_col, size.ws_row);
-	}
+    if (FD_ISSET(signalpipe[0], &rset)) {
+        char c[1];
+        struct winsize size;
+        if (read(signalpipe[0], c, 1) <= 0)
+        /* ignore error */;
+        /* ignore its value; it'll be `x' */
+        if (ioctl(STDIN_FILENO, TIOCGWINSZ, (void *)&size) >= 0)
+        back->size(backhandle, size.ws_col, size.ws_row);
+    }
 
-	if (FD_ISSET(STDIN_FILENO, &rset)) {
-	    char buf[4096];
-	    int ret;
+    if (FD_ISSET(STDIN_FILENO, &rset)) {
+        char buf[4096];
+        int ret;
 
-	    if (connopen && back->connected(backhandle)) {
-		ret = read(STDIN_FILENO, buf, sizeof(buf));
-		if (ret < 0) {
-		    perror("stdin: read");
-		    exit(1);
-		} else if (ret == 0) {
-		    back->special(backhandle, TS_EOF);
-		    sending = FALSE;   /* send nothing further after this */
-		} else {
-		    if (local_tty)
-			from_tty(buf, ret);
-		    else
-			back->send(backhandle, buf, ret);
-		}
-	    }
-	}
+        if (connopen && back->connected(backhandle)) {
+        ret = read(STDIN_FILENO, buf, sizeof(buf));
+        if (ret < 0) {
+            perror("stdin: read");
+            exit(1);
+        } else if (ret == 0) {
+            back->special(backhandle, TS_EOF);
+            sending = FALSE;   /* send nothing further after this */
+        } else {
+            if (local_tty)
+            from_tty(buf, ret);
+            else
+            back->send(backhandle, buf, ret);
+        }
+        }
+    }
 
-	if (FD_ISSET(STDOUT_FILENO, &wset)) {
-	    back->unthrottle(backhandle, try_output(FALSE));
-	}
+    if (FD_ISSET(STDOUT_FILENO, &wset)) {
+        back->unthrottle(backhandle, try_output(FALSE));
+    }
 
-	if (FD_ISSET(STDERR_FILENO, &wset)) {
-	    back->unthrottle(backhandle, try_output(TRUE));
-	}
+    if (FD_ISSET(STDERR_FILENO, &wset)) {
+        back->unthrottle(backhandle, try_output(TRUE));
+    }
 
         run_toplevel_callbacks();
 
-	if ((!connopen || !back->connected(backhandle)) &&
-	    bufchain_size(&stdout_data) == 0 &&
-	    bufchain_size(&stderr_data) == 0)
-	    break;		       /* we closed the connection */
+    if ((!connopen || !back->connected(backhandle)) &&
+        bufchain_size(&stdout_data) == 0 &&
+        bufchain_size(&stderr_data) == 0)
+        break;               /* we closed the connection */
     }
     exitcode = back->exitcode(backhandle);
     if (exitcode < 0) {
-	fprintf(stderr, "Remote process exit code unavailable\n");
-	exitcode = 1;		       /* this is an error condition */
+    fprintf(stderr, "Remote process exit code unavailable\n");
+    exitcode = 1;               /* this is an error condition */
     }
     cleanup_exit(exitcode);
-    return exitcode;		       /* shouldn't happen, but placates gcc */
+    return exitcode;               /* shouldn't happen, but placates gcc */
 }

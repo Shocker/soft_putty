@@ -181,31 +181,31 @@ Bignum dh_create_e(void *handle, int nbits)
     buf = snewn(nbytes, unsigned char);
 
     do {
-	/*
-	 * Create a potential x, by ANDing a string of random bytes
-	 * with qmask.
-	 */
-	if (ctx->x)
-	    freebn(ctx->x);
-	if (nbits == 0 || nbits > bignum_bitcount(ctx->qmask)) {
-	    ssh1_write_bignum(buf, ctx->qmask);
-	    for (i = 2; i < nbytes; i++)
-		buf[i] &= random_byte();
-	    ssh1_read_bignum(buf, nbytes, &ctx->x);   /* can't fail */
-	} else {
-	    int b, nb;
-	    ctx->x = bn_power_2(nbits);
-	    b = nb = 0;
-	    for (i = 0; i < nbits; i++) {
-		if (nb == 0) {
-		    nb = 8;
-		    b = random_byte();
-		}
-		bignum_set_bit(ctx->x, i, b & 1);
-		b >>= 1;
-		nb--;
-	    }
-	}
+    /*
+     * Create a potential x, by ANDing a string of random bytes
+     * with qmask.
+     */
+    if (ctx->x)
+        freebn(ctx->x);
+    if (nbits == 0 || nbits > bignum_bitcount(ctx->qmask)) {
+        ssh1_write_bignum(buf, ctx->qmask);
+        for (i = 2; i < nbytes; i++)
+        buf[i] &= random_byte();
+        ssh1_read_bignum(buf, nbytes, &ctx->x);   /* can't fail */
+    } else {
+        int b, nb;
+        ctx->x = bn_power_2(nbits);
+        b = nb = 0;
+        for (i = 0; i < nbits; i++) {
+        if (nb == 0) {
+            nb = 8;
+            b = random_byte();
+        }
+        bignum_set_bit(ctx->x, i, b & 1);
+        b >>= 1;
+        nb--;
+        }
+    }
     } while (bignum_cmp(ctx->x, One) <= 0 || bignum_cmp(ctx->x, ctx->q) >= 0);
 
     sfree(buf);

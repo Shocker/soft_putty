@@ -342,12 +342,12 @@ static unsigned share_find_unused_id
     low = low_orig;
     high = high_orig = count234(sharestate->connections);
     while (high - low > 1) {
-	mid = (high + low) / 2;
-	cs = index234(sharestate->connections, mid);
-	if (cs->id == first + (mid - low_orig))
-	    low = mid;		       /* this one is still in the sequence */
-	else
-	    high = mid;		       /* this one is past the end */
+    mid = (high + low) / 2;
+    cs = index234(sharestate->connections, mid);
+    if (cs->id == first + (mid - low_orig))
+        low = mid;               /* this one is still in the sequence */
+    else
+        high = mid;               /* this one is past the end */
     }
 
     /*
@@ -366,7 +366,7 @@ static unsigned share_find_unused_id
     {
         struct ssh_sharing_connstate dummy;
         dummy.id = ret;
-	assert(NULL == find234(sharestate->connections, &dummy, NULL));
+    assert(NULL == find234(sharestate->connections, &dummy, NULL));
     }
     return ret;
 }
@@ -1756,8 +1756,8 @@ static void share_got_pkt_from_downstream(struct ssh_sharing_connstate *cs,
 /*
  * Coroutine macros similar to, but simplified from, those in ssh.c.
  */
-#define crBegin(v)	{ int *crLine = &v; switch(v) { case 0:;
-#define crFinish(z)	} *crLine = 0; return (z); }
+#define crBegin(v)    { int *crLine = &v; switch(v) { case 0:;
+#define crFinish(z)    } *crLine = 0; return (z); }
 #define crGetChar(c) do                                         \
     {                                                           \
         while (len == 0) {                                      \
@@ -1918,11 +1918,11 @@ static int share_listen_accepting(Plug plug,
                                   accept_fn_t constructor, accept_ctx_t ctx)
 {
     static const struct plug_function_table connection_fn_table = {
-	NULL, /* no log function, because that's for outgoing connections */
-	share_closing,
+    NULL, /* no log function, because that's for outgoing connections */
+    share_closing,
         share_receive,
         share_sent,
-	NULL /* no accepting function, because we've already done it */
+    NULL /* no accepting function, because we've already done it */
     };
     struct ssh_sharing_state *sharestate = (struct ssh_sharing_state *)plug;
     struct ssh_sharing_connstate *cs;
@@ -1948,7 +1948,7 @@ static int share_listen_accepting(Plug plug,
     cs->sock = constructor(ctx, (Plug) cs);
     if ((err = sk_socket_error(cs->sock)) != NULL) {
         sfree(cs);
-	return err != NULL;
+    return err != NULL;
     }
 
     sk_set_frozen(cs->sock, 0);
@@ -1996,11 +1996,11 @@ Socket ssh_connection_sharing_init(const char *host, int port,
                                    Conf *conf, Ssh ssh, void **state)
 {
     static const struct plug_function_table listen_fn_table = {
-	NULL, /* no log function, because that's for outgoing connections */
-	share_listen_closing,
+    NULL, /* no log function, because that's for outgoing connections */
+    share_listen_closing,
         NULL, /* no receive function on a listening socket */
         NULL, /* no sent function on a listening socket */
-	share_listen_accepting
+    share_listen_accepting
     };
 
     int result, can_upstream, can_downstream;
