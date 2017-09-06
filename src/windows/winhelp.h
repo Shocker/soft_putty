@@ -68,6 +68,7 @@
 #define WINHELP_CTX_behaviour_altenter "behaviour.altenter:config-fullscreen"
 #define WINHELP_CTX_behaviour_startmaximized "behaviour.startmaximized:config-startmaximized"
 #define WINHELP_CTX_behaviour_f_keys_start_sessions "behaviour.f_keys_start_sessions:config-f_keys_start_sessions"
+#define WINHELP_CTX_behaviour_ctrl_shift_c_clear "behaviour.ctrl_shift_c_clear:config-ctrl_shift_c_clear"
 #define WINHELP_CTX_appearance_cursor "appearance.cursor:config-cursor"
 #define WINHELP_CTX_appearance_font "appearance.font:config-font"
 #define WINHELP_CTX_appearance_title "appearance.title:config-title"

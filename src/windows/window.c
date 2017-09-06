@@ -4242,6 +4242,18 @@ static int TranslateKey(UINT message, WPARAM wParam, LPARAM lParam,
         return 0;
     }
 
+    // clear window and scrollback
+    if (shift_state == 3 && wParam == 'C' && conf_get_int(conf, CONF_ctrl_shift_c_clear))
+    {
+        // clear scrollback
+        term_clrsb(term);
+
+        // send "clear"
+        p += sprintf((char *)p, "clear");
+        *p++ = '\n';
+        return p - output;
+    }
+
     /* Nethack keypad */
     if (nethack_keypad && !left_alt) {
         switch (wParam) {
