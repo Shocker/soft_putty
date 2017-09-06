@@ -349,6 +349,10 @@ void win_setup_config_box(struct controlbox *b, HWND *hwndp, int has_help,
         HELPCTX(behaviour_startmaximized),
         conf_checkbox_handler,
         I(CONF_start_maximized));
+    ctrl_checkbox(s, "Function keys (F1 - F12) start saved sessions", 'k',
+        HELPCTX(behaviour_f_keys_start_sessions),
+        conf_checkbox_handler,
+        I(CONF_f_keys_start_sessions));
 
     /*
      * Windows supports a local-command proxy. This also means we
