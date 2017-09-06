@@ -345,6 +345,10 @@ void win_setup_config_box(struct controlbox *b, HWND *hwndp, int has_help,
           HELPCTX(behaviour_altenter),
           conf_checkbox_handler,
           I(CONF_fullscreenonaltenter));
+    ctrl_checkbox(s, "Start new windows maximized", 'm',
+        HELPCTX(behaviour_startmaximized),
+        conf_checkbox_handler,
+        I(CONF_start_maximized));
 
     /*
      * Windows supports a local-command proxy. This also means we

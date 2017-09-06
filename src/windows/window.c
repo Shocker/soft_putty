@@ -2208,6 +2208,12 @@ static LRESULT CALLBACK WndProc(HWND hwnd, UINT message,
         si.dwFlags = 0;
         si.cbReserved2 = 0;
         si.lpReserved2 = NULL;
+        // start maximized
+        if (conf_get_int(conf, CONF_start_maximized))
+        {
+            si.dwFlags |= STARTF_USESHOWWINDOW;
+            si.wShowWindow = SW_MAXIMIZE;
+        }
         CreateProcess(b, cl, NULL, NULL, inherit_handles,
                   NORMAL_PRIORITY_CLASS, NULL, NULL, &si, &pi);
                 CloseHandle(pi.hProcess);

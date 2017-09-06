@@ -651,6 +651,7 @@ void save_open_settings(void *sesskey, Conf *conf)
     write_setting_i(sesskey, "ConnectionSharing", conf_get_int(conf, CONF_ssh_connection_sharing));
     write_setting_i(sesskey, "ConnectionSharingUpstream", conf_get_int(conf, CONF_ssh_connection_sharing_upstream));
     write_setting_i(sesskey, "ConnectionSharingDownstream", conf_get_int(conf, CONF_ssh_connection_sharing_downstream));
+    write_setting_i(sesskey, "StartMaximized", conf_get_int(conf, CONF_start_maximized));
     wmap(sesskey, "SSHManualHostKeys", conf, CONF_ssh_manual_hostkeys, FALSE);
 }
 
@@ -834,6 +835,7 @@ void load_open_settings(void *sesskey, Conf *conf)
     gpps(sesskey, "Answerback", "PuTTY", conf, CONF_answerback);
     gppi(sesskey, "AlwaysOnTop", 0, conf, CONF_alwaysontop);
     gppi(sesskey, "FullScreenOnAltEnter", 0, conf, CONF_fullscreenonaltenter);
+    gppi(sesskey, "StartMaximized", 1, conf, CONF_start_maximized);
     gppi(sesskey, "HideMousePtr", 0, conf, CONF_hide_mouseptr);
     gppi(sesskey, "SunkenEdge", 0, conf, CONF_sunken_edge);
     gppi(sesskey, "WindowBorder", 1, conf, CONF_window_border);
