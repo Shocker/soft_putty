@@ -224,6 +224,8 @@ static UINT wm_mousewheel = WM_MOUSEWHEEL;
 const int share_can_be_downstream = TRUE;
 const int share_can_be_upstream = TRUE;
 
+void explicit_session_start(Terminal *term, char* sessionName);
+
 /* Dummy routine, only required in plink. */
 void ldisc_update(void *frontend, int echo, int edit)
 {
@@ -4231,6 +4233,15 @@ static int TranslateKey(UINT message, WPARAM wParam, LPARAM lParam,
         return 0;
     }
 
+    // function keys start sessions
+    if (wParam >= VK_F1 && wParam <= VK_F12 && conf_get_int(conf, CONF_f_keys_start_sessions))
+    {
+        int sessionIndex = wParam - VK_F1 + 1; // 0 is always "Default Settings"
+        if (sessionIndex < sesslist.nsessions)
+            explicit_session_start(term, sesslist.sessions[sessionIndex]);
+        return 0;
+    }
+
     /* Nethack keypad */
     if (nethack_keypad && !left_alt) {
         switch (wParam) {
@@ -4430,6 +4441,7 @@ static int TranslateKey(UINT message, WPARAM wParam, LPARAM lParam,
      * respectively.
      */
     code = 0;
+    if (!conf_get_int(conf, CONF_f_keys_start_sessions))
     switch (wParam) {
       case VK_F1:
         code = (keystate[VK_SHIFT] & 0x80 ? 23 : 11);
@@ -5847,4 +5859,30 @@ void agent_schedule_callback(void (*callback)(void *, void *, int),
     c->data = data;
     c->len = len;
     PostMessage(hwnd, WM_AGENT_CALLBACK, 0, (LPARAM)c);
+}
+
+void explicit_session_start(Terminal *term, char* sessionName)
+{
+    char b[2048];
+    char c[512];
+    STARTUPINFO si;
+    PROCESS_INFORMATION pi;
+    SECURITY_ATTRIBUTES sa;
+
+    sprintf(c, "putty -load \"%s\"", sessionName);
+
+    GetModuleFileName(NULL, b, sizeof(b) - 1);
+    memset(&si, 0, sizeof(si));
+    si.cb = sizeof(si);
+
+    // start maximized
+    if (conf_get_int(conf, CONF_start_maximized))
+    {
+        si.dwFlags |= STARTF_USESHOWWINDOW;
+        si.wShowWindow = SW_MAXIMIZE;
+    }
+
+    CreateProcess(b, &c, NULL, NULL, TRUE, NORMAL_PRIORITY_CLASS, NULL, NULL, &si, &pi);
+    CloseHandle(pi.hProcess);
+    CloseHandle(pi.hThread);
 }

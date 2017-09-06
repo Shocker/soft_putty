@@ -747,6 +747,7 @@ void cleanup_exit(int);
     X(INT, NONE, alwaysontop) \
     X(INT, NONE, fullscreenonaltenter) \
     X(INT, NONE, start_maximized) \
+    X(INT, NONE, f_keys_start_sessions) \
     X(INT, NONE, scroll_on_key) \
     X(INT, NONE, scroll_on_disp) \
     X(INT, NONE, erase_to_scrollback) \
