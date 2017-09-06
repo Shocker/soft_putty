@@ -66,6 +66,7 @@
 #define WINHELP_CTX_behaviour_altonly "behaviour.altonly:config-altonly"
 #define WINHELP_CTX_behaviour_alwaysontop "behaviour.alwaysontop:config-alwaysontop"
 #define WINHELP_CTX_behaviour_altenter "behaviour.altenter:config-fullscreen"
+#define WINHELP_CTX_behaviour_startmaximized "behaviour.startmaximized:config-startmaximized"
 #define WINHELP_CTX_appearance_cursor "appearance.cursor:config-cursor"
 #define WINHELP_CTX_appearance_font "appearance.font:config-font"
 #define WINHELP_CTX_appearance_title "appearance.title:config-title"
