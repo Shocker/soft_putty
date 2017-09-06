@@ -353,6 +353,10 @@ void win_setup_config_box(struct controlbox *b, HWND *hwndp, int has_help,
         HELPCTX(behaviour_f_keys_start_sessions),
         conf_checkbox_handler,
         I(CONF_f_keys_start_sessions));
+    ctrl_checkbox(s, "CTRL + SHIFT + C clears scrollback and sends 'clear'", 'r',
+        HELPCTX(behaviour_ctrl_shift_c_clear),
+        conf_checkbox_handler,
+        I(CONF_ctrl_shift_c_clear));
 
     /*
      * Windows supports a local-command proxy. This also means we
