@@ -5,6 +5,7 @@ Source code from [official PuTTY](http://www.chiark.greenend.org.uk/~sgtatham/pu
 - Option to start new windows/sessions maximized
 - Option to start saved sessions by using the function keys *(F1 - F12)*
 - Option to clear window and scrollback using *CTRL + SHIFT + C*
+- Restart session by pressing R key if terminated
 
 Most options can be found in the **Window -> Behaviour** section of settings
 

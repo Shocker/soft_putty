@@ -4254,6 +4254,14 @@ static int TranslateKey(UINT message, WPARAM wParam, LPARAM lParam,
         return p - output;
     }
 
+    // restart session using R key if terminated
+    if (wParam == 'R' && session_closed)
+    {
+        logevent(NULL, "----- Session restarted -----");
+        term_pwron(term, FALSE);
+        start_backend();
+    }
+
     /* Nethack keypad */
     if (nethack_keypad && !left_alt) {
         switch (wParam) {
