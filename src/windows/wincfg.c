@@ -357,6 +357,10 @@ void win_setup_config_box(struct controlbox *b, HWND *hwndp, int has_help,
         HELPCTX(behaviour_ctrl_shift_c_clear),
         conf_checkbox_handler,
         I(CONF_ctrl_shift_c_clear));
+    ctrl_checkbox(s, "CTRL + ALT + D duplicates the current session", 'd',
+        HELPCTX(behaviour_ctrl_alt_d_duplicate),
+        conf_checkbox_handler,
+        I(CONF_ctrl_alt_d_duplicate));
 
     /*
      * Windows supports a local-command proxy. This also means we

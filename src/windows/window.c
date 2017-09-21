@@ -225,6 +225,7 @@ const int share_can_be_downstream = TRUE;
 const int share_can_be_upstream = TRUE;
 
 void explicit_session_start(Terminal *term, char* sessionName);
+void duplicate_current_session(Terminal *term);
 
 /* Dummy routine, only required in plink. */
 void ldisc_update(void *frontend, int echo, int edit)
@@ -4254,6 +4255,12 @@ static int TranslateKey(UINT message, WPARAM wParam, LPARAM lParam,
         return p - output;
     }
 
+    // duplicate session
+    if (left_alt && shift_state == 2 && wParam == 'D' && conf_get_int(conf, CONF_ctrl_alt_d_duplicate))
+    {
+        duplicate_current_session(term);
+    }
+
     // restart session using R key if terminated
     if (wParam == 'R' && session_closed)
     {
@@ -5905,4 +5912,64 @@ void explicit_session_start(Terminal *term, char* sessionName)
     CreateProcess(b, &c, NULL, NULL, TRUE, NORMAL_PRIORITY_CLASS, NULL, NULL, &si, &pi);
     CloseHandle(pi.hProcess);
     CloseHandle(pi.hThread);
+}
+
+void duplicate_current_session(Terminal *term)
+{
+    char b[2048];
+    char c[30], *cl;
+    int freecl = FALSE;
+    BOOL inherit_handles;
+    STARTUPINFO si;
+    PROCESS_INFORMATION pi;
+    HANDLE filemap = NULL;
+
+    SECURITY_ATTRIBUTES sa;
+    void *p;
+    int size;
+
+    size = conf_serialised_size(term->conf);
+
+    sa.nLength = sizeof(sa);
+    sa.lpSecurityDescriptor = NULL;
+    sa.bInheritHandle = TRUE;
+    filemap = CreateFileMapping(INVALID_HANDLE_VALUE, &sa, PAGE_READWRITE, 0, size, NULL);
+    if (filemap && filemap != INVALID_HANDLE_VALUE)
+    {
+        p = (MapViewOfFile(filemap, FILE_MAP_WRITE, 0, 0, size));
+        if (p)
+        {
+            conf_serialise(term->conf, p);  /* structure copy */
+            UnmapViewOfFile(p);
+        }
+    }
+
+    inherit_handles = TRUE;
+    sprintf(c, "putty &%p:%u", filemap, (unsigned)size);
+    cl = c;
+
+    GetModuleFileName(NULL, b, sizeof(b) - 1);
+    si.cb = sizeof(si);
+    si.lpReserved = NULL;
+    si.lpDesktop = NULL;
+    si.lpTitle = NULL;
+    si.dwFlags = 0;
+    si.cbReserved2 = 0;
+    si.lpReserved2 = NULL;
+
+    // start maximized
+    if (conf_get_int(conf, CONF_start_maximized))
+    {
+        si.dwFlags |= STARTF_USESHOWWINDOW;
+        si.wShowWindow = SW_MAXIMIZE;
+    }
+
+    CreateProcess(b, cl, NULL, NULL, inherit_handles, NORMAL_PRIORITY_CLASS, NULL, NULL, &si, &pi);
+    CloseHandle(pi.hProcess);
+    CloseHandle(pi.hThread);
+
+    if (filemap)
+        CloseHandle(filemap);
+    if (freecl)
+        sfree(cl);
 }
